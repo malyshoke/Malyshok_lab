@@ -7,6 +7,19 @@
 
 
 using namespace std;
+template <typename T>
+
+T GetCorrectNumber(T min, T max)
+{
+    T x;
+    while ((cin >> x).fail() || x < min || x > max)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Type number (" << min << "-" << max << "):";
+    }
+    return x;
+}
 
 void print_pipe(Pipe& pipe)
 {
@@ -69,10 +82,10 @@ Station input_station()
     cout << "Enter the number of factories: ";
     cin >> station.num;
     cout << "Enter the number of factories in process: ";
-    cin >> station.num_process;
+    station.num_process = GetCorrectNumber(0, station.num);
    // if (station.num_process )
     cout << "Enter the efficiency: ";
-    cin >> station.eff;
+    station.eff = GetCorrectNumber(0, 100);
     return station;
 }
 
@@ -88,17 +101,16 @@ void print_station(Station& station)
 
 void print_menu()
 {
-    system("cls");
     cout << " Menu " << endl
         << "1. Add pipe" << endl
         << "2. Add station" << endl
-        << "3. View all pipes" << endl
-        << "4. Edit pipe" << endl
-        << "5. Edit station" << endl
-        << "6. Save" << endl
-        << "7. Download" << endl
-        << "0. Exit" << endl
-        << " > " << endl;
+        << "3. Edit pipe" << endl
+        << "4. Edit station" << endl
+        << "5. Save pipe" << endl
+        << "6. Save station" << endl
+        << "7. Download pipe" << endl
+        << "8. Download station" << endl
+        << "0. Exit" << endl;
 }
 
 void edit_pipe(Pipe& pipe)
@@ -152,24 +164,14 @@ void save_station(Station& station)
 }
 
 
-
-//int get_variant(int count) {
-   // int variant;
-   // string s;
-  //  getline(cin, s);
-
-
 int main()
 {
-    int variant;
     Pipe pipe;
     Station station;
     while (1)
     {
     print_menu();
-    int i = 0;
-    cin >> i;
-    switch (i)
+    switch (GetCorrectNumber(0,8))
     {
     case 1:
     {
@@ -183,32 +185,39 @@ int main()
     }
     case 3:
     {
+        edit_pipe(pipe);
         break;
     }
     case 4:
     {   
-        edit_pipe(pipe);
+        edit_station(station);
         break;
     }
     case 5:
     {
-        edit_station(station);
+        save_pipe(pipe);
         break;
     }
     case 6:
     {
         save_station(station);
-        save_pipe(pipe);
         break;
     }
 
     case 7:
     {
-        station = load_station();
+ 
         pipe = load_pipe();
+        print_pipe(pipe);
         break;
     }
 
+    case 8:
+    {
+        station = load_station();
+        print_station(station);
+        break;
+    }
     case 0:
     {
         return 0;
