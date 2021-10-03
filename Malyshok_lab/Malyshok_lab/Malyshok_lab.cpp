@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "Malyshok_lab.h"
+#include <fstream>
 
 
 using namespace std;
@@ -10,9 +11,9 @@ using namespace std;
 void print_pipe(Pipe& pipe)
 {
     cout << "Information about pipe: " << endl
-         << "Id: " << pipe.id << endl << "Length: " 
-         << pipe.length << endl << "Diameter: " 
-         << pipe.diameter;
+         << "\tId: " << pipe.id  
+         << "\tLength: "  << pipe.length  
+         << "\tDiameter: " << pipe.diameter << endl;
 }
 
 Pipe input_pipe()
@@ -45,12 +46,12 @@ Station input_station()
 
 void print_station(Station& station)
 {
-    cout << "Information about station: " << endl
-         << "Id: " << station.id << endl 
-         << "Name: " << station.name << endl 
-         << "Number of factories: " << station.num << endl
-         << "Number of factories in process: " << station.num_process << endl
-         << "Efficiency: " << station.eff << endl;
+    cout << "Information about station: " << endl 
+         << "\tId: " << station.id  
+         << "\tName: " << station.name << endl 
+         << "\tNumber of factories: " << station.num << endl
+         << "\tNumber of factories in process: " << station.num_process << endl
+         << "\tEfficiency: " << station.eff << endl;
 }
 
 void print_menu()
@@ -68,17 +69,39 @@ void print_menu()
         << " > " << endl;
 }
 
-Pipe edit_pipe()
+void edit_pipe(Pipe pipe)
 {
-    Pipe pipe;
     cout << "Please, enter the information about pipe " << endl;
     cout << "Enter the length: ";
     cin >> pipe.length;
     cout << "Enter the diameter: ";
     cin >> pipe.diameter;
-    return pipe;
 }
 
+void edit_station(Station station)
+{
+    cout << "Please, enter the information about station " << endl;
+    cout << "Please, enter the information about station " << endl;
+    cout << "Enter the name: ";
+    cin >> station.name;
+    cout << "Enter the number of factories: ";
+    cin >> station.num;
+    cout << "Enter the number of factories in process: ";
+    cin >> station.num_process;
+    cout << "Enter the efficiency: ";
+    cin >> station.eff;
+}
+
+void save_pipe(Pipe& pipe)
+ {
+       ofstream fout;
+       fout.open("data.txt", 'w');
+       fout << "Information about pipe: " << endl
+           << "\tId: " << pipe.id
+           << "\tLength: " << pipe.length
+           << "\tDiameter: " << pipe.diameter << endl;
+
+ }
 
 //int get_variant(int count) {
    // int variant;
@@ -96,18 +119,8 @@ int main()
     print_station(station);
     pipe = input_pipe();
     print_pipe(pipe);
-    pipe = edit_pipe();
+    edit_pipe(pipe);
+    save_pipe(pipe);
 }
 
 
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
