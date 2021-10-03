@@ -18,6 +18,8 @@ void print_pipe(Pipe& pipe)
 
 Pipe input_pipe()
 {
+    ifstream fin;
+    fin.open("data.txt", 'r');
     Pipe pipe;
     pipe.id = 0;
     cout << "Please, enter the information about pipe " << endl;
@@ -26,6 +28,30 @@ Pipe input_pipe()
     cout << "Enter the diameter: ";
     cin >> pipe.diameter;
     return pipe;
+}
+
+Pipe load_pipe()
+{
+    ifstream fin;
+    fin.open("data.txt", ios::in);
+    Pipe pipe;
+    fin >> pipe.length;
+    fin >> pipe.diameter; 
+    fin.close();
+    return pipe;
+}
+
+Station load_station()
+{
+    ifstream fin;
+    fin.open("data.txt", ios::in);
+    Station station;
+    cin >> station.name;
+    cin >> station.num;
+    cin >> station.num_process;
+    cin >> station.eff;
+    fin.close();
+    return station;
 }
 
 Station input_station()
@@ -69,7 +95,7 @@ void print_menu()
         << " > " << endl;
 }
 
-void edit_pipe(Pipe pipe)
+void edit_pipe(Pipe& pipe)
 {
     cout << "Please, enter the information about pipe " << endl;
     cout << "Enter the length: ";
@@ -78,7 +104,7 @@ void edit_pipe(Pipe pipe)
     cin >> pipe.diameter;
 }
 
-void edit_station(Station station)
+void edit_station(Station& station)
 {
     cout << "Please, enter the information about station " << endl;
     cout << "Please, enter the information about station " << endl;
@@ -93,15 +119,31 @@ void edit_station(Station station)
 }
 
 void save_pipe(Pipe& pipe)
- {
-       ofstream fout;
-       fout.open("data.txt", 'w');
-       fout << "Information about pipe: " << endl
-           << "\tId: " << pipe.id
-           << "\tLength: " << pipe.length
-           << "\tDiameter: " << pipe.diameter << endl;
+{
+    ofstream fout;
+    fout.open("data.txt", 'w');
+    fout << "Information about pipe: " << endl
+        << "\tId: " << pipe.id
+        << "\tLength: " << pipe.length
+        << "\tDiameter: " << pipe.diameter << endl;
+    fout.close();
 
- }
+}
+
+void save_station(Station& station)
+{
+    ofstream fout; 
+    fout.open("data.txt", 'w');
+    fout << cout << "Information about station: " << endl
+        << "\tId: " << station.id
+        << "\tName: " << station.name << endl
+        << "\tNumber of factories: " << station.num << endl
+        << "\tNumber of factories in process: " << station.num_process << endl
+        << "\tEfficiency: " << station.eff << endl;
+    fout.close();
+}
+
+
 
 //int get_variant(int count) {
    // int variant;
@@ -119,8 +161,8 @@ int main()
     print_station(station);
     pipe = input_pipe();
     print_pipe(pipe);
-    edit_pipe(pipe);
-    save_pipe(pipe);
+    //edit_pipe(pipe);
+    //save_pipe(pipe);
 }
 
 
