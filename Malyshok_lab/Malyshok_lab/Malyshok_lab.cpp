@@ -35,6 +35,7 @@ Pipe load_pipe()
     ifstream fin;
     fin.open("data.txt", ios::in);
     Pipe pipe;
+    fin >> pipe.id;
     fin >> pipe.length;
     fin >> pipe.diameter; 
     fin.close();
@@ -46,10 +47,11 @@ Station load_station()
     ifstream fin;
     fin.open("data.txt", ios::in);
     Station station;
-    cin >> station.name;
-    cin >> station.num;
-    cin >> station.num_process;
-    cin >> station.eff;
+    fin >> station.id;
+    fin >> station.name;
+    fin >> station.num;
+    fin >> station.num_process;
+    fin >> station.eff;
     fin.close();
     return station;
 }
@@ -121,11 +123,10 @@ void edit_station(Station& station)
 void save_pipe(Pipe& pipe)
 {
     ofstream fout;
-    fout.open("data.txt", 'w');
-    fout << "Information about pipe: " << endl
-        << "\tId: " << pipe.id
-        << "\tLength: " << pipe.length
-        << "\tDiameter: " << pipe.diameter << endl;
+    fout.open("data.txt", ios::out);
+    fout << pipe.id << endl
+         << pipe.length << endl
+         << pipe.diameter << endl;
     fout.close();
 
 }
@@ -133,13 +134,12 @@ void save_pipe(Pipe& pipe)
 void save_station(Station& station)
 {
     ofstream fout; 
-    fout.open("data.txt", 'w');
-    fout << cout << "Information about station: " << endl
-        << "\tId: " << station.id
-        << "\tName: " << station.name << endl
-        << "\tNumber of factories: " << station.num << endl
-        << "\tNumber of factories in process: " << station.num_process << endl
-        << "\tEfficiency: " << station.eff << endl;
+    fout.open("data.txt", ios::out);
+    fout   << station.id << endl
+           << station.name << endl
+           << station.num << endl
+           << station.num_process << endl
+           << station.eff << endl;
     fout.close();
 }
 
@@ -157,12 +157,12 @@ int main()
     Pipe pipe;
     Station station;
     print_menu();
-    station = input_station();
-    print_station(station);
     pipe = input_pipe();
-    print_pipe(pipe);
+    station = load_station();
+    print_station(station);
+    //print_pipe(pipe);
     //edit_pipe(pipe);
-    //save_pipe(pipe);
+    //save_station(station);
 }
 
 

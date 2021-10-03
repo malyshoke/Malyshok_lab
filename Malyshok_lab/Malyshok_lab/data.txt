@@ -1,2 +1,0 @@
-Information about pipe: 
-	Id: 0	Length: 3	Diameter: 12
