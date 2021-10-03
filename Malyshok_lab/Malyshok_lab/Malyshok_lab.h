@@ -7,6 +7,7 @@ struct Pipe
     int id;
     double length;
     double diameter;
+    bool in_process;
 };
 
 struct  Station

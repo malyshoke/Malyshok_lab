@@ -21,6 +21,19 @@ T GetCorrectNumber(T min, T max)
     return x;
 }
 
+template <typename T>
+T GetCorrectNumber(T min)
+{
+    T x;
+    while ((cin >> x).fail() || x < min)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Type number (0...): ";
+    }
+    return x;
+}
+
 void print_pipe(Pipe& pipe)
 {
     cout << "Information about pipe: " << endl
@@ -36,9 +49,9 @@ Pipe input_pipe()
     pipe.id = 0;
     cout << "Please, enter the information about pipe " << endl;
     cout << "Enter the length: ";
-    cin >> pipe.length;
+    pipe.length = GetCorrectNumber(0);
     cout << "Enter the diameter: ";
-    cin >> pipe.diameter;
+    pipe.diameter = GetCorrectNumber(0);
     return pipe;
 }
 
@@ -83,7 +96,6 @@ Station input_station()
     cin >> station.num;
     cout << "Enter the number of factories in process: ";
     station.num_process = GetCorrectNumber(0, station.num);
-   // if (station.num_process )
     cout << "Enter the efficiency: ";
     station.eff = GetCorrectNumber(0, 100);
     return station;
