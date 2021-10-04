@@ -44,35 +44,42 @@ void print_pipe(Pipe& pipe)
 
 Pipe input_pipe()
 {
-    
+    char variant;
     Pipe pipe;
-    pipe.id = 0;
+    pipe.id = 1;
     cout << "Please, enter the information about pipe " << endl;
     cout << "Enter the length: ";
     pipe.length = GetCorrectNumber(0);
     cout << "Enter the diameter: ";
     pipe.diameter = GetCorrectNumber(0);
+    cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
+    do {
+    variant = _getch();
+    if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+     } while (variant != '0' && variant != '1');
+    variant == '1' ? pipe.in_process = true : pipe.in_process = false;
+    if (pipe.in_process)
+        cout << "Pipe in process" << endl;
+    else 
+        cout << "Pipe is not in process" << endl;
     return pipe;
 }
 
-Pipe load_pipe()
+Pipe load_pipe(ifstream& fin)
 {
-    ifstream fin;
-    fin.open("data.txt", ios::in);
+   
     if (fin.is_open()) {
         Pipe pipe;
         fin >> pipe.id;
         fin >> pipe.length;
         fin >> pipe.diameter;
-        fin.close();
         return pipe;
     }
 }
 
-Station load_station()
+Station load_station(ifstream& fin)
 {
-    ifstream fin;
-    fin.open("data.txt", ios::in);
+  
     if (fin.is_open()) {
         Station station;
         fin >> station.id;
@@ -80,7 +87,6 @@ Station load_station()
         fin >> station.num;
         fin >> station.num_process;
         fin >> station.eff;
-        fin.close();
         return station;
     }
 }
@@ -88,7 +94,7 @@ Station load_station()
 Station input_station()
 {
     Station station;
-    station.id = 0;
+    station.id = 1;
     cout << "Please, enter the information about station "<< endl;
     cout << "Enter the name: ";
     cin >> station.name;
@@ -118,72 +124,82 @@ void print_menu()
         << "2. Add station" << endl
         << "3. Edit pipe" << endl
         << "4. Edit station" << endl
-        << "5. Save pipe" << endl
-        << "6. Save station" << endl
-        << "7. Download pipe" << endl
-        << "8. Download station" << endl
+        << "5. Save" << endl
+        << "6. Load " << endl
         << "0. Exit" << endl;
 }
 
 void edit_pipe(Pipe& pipe)
 {
-    cout << "Please, enter the information about pipe " << endl;
-    cout << "Enter the length: ";
-    cin >> pipe.length;
-    cout << "Enter the diameter: ";
-    cin >> pipe.diameter;
+    char variant;
+    cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
+    do {
+    variant = _getch();
+    if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+     } while (variant != '0' && variant != '1');
+    variant == '1' ? pipe.in_process = true : pipe.in_process = false;
+    if (pipe.in_process)
+        cout << "Pipe in process" << endl;
+    else 
+        cout << "Pipe is not in process" << endl;
+    pipe.in_process = !pipe.in_process;
 }
 
 void edit_station(Station& station)
 {
-    cout << "Please, enter the information about station " << endl;
-    cout << "Please, enter the information about station " << endl;
-    cout << "Enter the name: ";
-    cin >> station.name;
-    cout << "Enter the number of factories: ";
-    cin >> station.num;
-    cout << "Enter the number of factories in process: ";
-    cin >> station.num_process;
-    cout << "Enter the efficiency: ";
-    cin >> station.eff;
+    int n;
+    char variant;
+    cout << "Enter 1 if factories were added to work or 0 if factories were ecluded from work" << endl;
+    do {
+        variant = _getch();
+        if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+    } while (variant != '0' && variant != '1');
+    if (variant) {
+        cout << "Enter how many factories were added to work " << endl;
+        n = GetCorrectNumber(0, (station.num - station.num_process));
+        station.num_process = station.num_process + n;
+    }
+    else cout << "Enter how many factories were ecluded from work " << endl;
+         n = GetCorrectNumber(0, (station.num_process));
+         station.num_process = station.num_process - n;
+
 }
 
-void save_pipe(Pipe& pipe)
-{
-    ofstream fout;
-    fout.open("data.txt", ios::out);
+void save_pipe(Pipe& pipe, ofstream& fout)
+{   
+   
     if (fout.is_open()) {
         fout << pipe.id << endl
             << pipe.length << endl
             << pipe.diameter << endl;
-        fout.close();
     }
 
 }
 
-void save_station(Station& station)
+void save_station(Station& station, ofstream& fout)
 {
-    ofstream fout; 
-    fout.open("data.txt", ios::out);
+    
     if (fout.is_open()) {
         fout << station.id << endl
             << station.name << endl
             << station.num << endl
             << station.num_process << endl
             << station.eff << endl;
-        fout.close();
+        
     }
 }
 
-
 int main()
 {
-    Pipe pipe;
+    
+    Pipe pipe = {};
     Station station;
+    station.id = 0;
+    pipe.id = 0;
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber(0,8))
+    switch (GetCorrectNumber(0,6))
     {
     case 1:
     {
@@ -205,31 +221,43 @@ int main()
         edit_station(station);
         break;
     }
+
     case 5:
-    {
-        save_pipe(pipe);
+
+    {   ofstream fout;
+        fout.open("data.txt", ios::out);
+        if (station.id != 0)
+            save_station(station, fout);
+        if (pipe.id != 0)
+            save_pipe(pipe, fout);
+        fout.close();
         break;
     }
+
     case 6:
-    {
-        save_station(station);
+    {   ifstream fin;
+        fin.open("data.txt", ios::in);
+
+        if (station.id == 0) {
+            cout << "No station" << endl;
+        }
+        else
+        {
+            station = load_station(fin);
+            print_station(station);
+        }
+
+        if (pipe.id == 0) {
+            cout << "No pipe" << endl;
+        }
+        else {
+            pipe = load_pipe(fin);
+            print_pipe(pipe);
+        }
+        fin.close();
         break;
     }
 
-    case 7:
-    {
- 
-        pipe = load_pipe();
-        print_pipe(pipe);
-        break;
-    }
-
-    case 8:
-    {
-        station = load_station();
-        print_station(station);
-        break;
-    }
     case 0:
     {
         return 0;
