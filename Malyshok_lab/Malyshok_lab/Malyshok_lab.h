@@ -26,6 +26,8 @@ void print_station(Station& station);
 
 void print_menu();
 
+void pipe_process(Pipe& pipe);
+
 void input_station(Station& station);
 
 void input_pipe(Pipe& pipe);

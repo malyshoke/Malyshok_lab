@@ -40,6 +40,7 @@ void print_pipe(Pipe& pipe)
          << "\tId: " << pipe.id  
          << "\tLength: "  << pipe.length  
          << "\tDiameter: " << pipe.diameter << endl;
+    
 }
 
 Pipe input_pipe()
@@ -129,40 +130,56 @@ void print_menu()
         << "0. Exit" << endl;
 }
 
+void pipe_process(Pipe& pipe)
+{
+    if (pipe.in_process)
+        cout << "Pipe in process" << endl;
+    else
+        cout << "Pipe is not in process" << endl;
+    pipe.in_process = !pipe.in_process;
+}
+
 void edit_pipe(Pipe& pipe)
 {
     char variant;
-    cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
-    do {
-    variant = _getch();
-    if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-     } while (variant != '0' && variant != '1');
-    variant == '1' ? pipe.in_process = true : pipe.in_process = false;
-    if (pipe.in_process)
-        cout << "Pipe in process" << endl;
-    else 
-        cout << "Pipe is not in process" << endl;
-    pipe.in_process = !pipe.in_process;
+    if (pipe.id != 0)
+    {
+        cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
+        do {
+            variant = _getch();
+            if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+        } while (variant != '0' && variant != '1');
+        variant == '1' ? pipe.in_process = true : pipe.in_process = false;
+        pipe_process(pipe);
+    }
+    else
+    {
+        cout << "No pipe to edit" << endl;
+    }
 }
 
 void edit_station(Station& station)
 {
     int n;
     char variant;
-    cout << "Enter 1 if factories were added to work or 0 if factories were ecluded from work" << endl;
-    do {
-        variant = _getch();
-        if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-    } while (variant != '0' && variant != '1');
-    if (variant) {
-        cout << "Enter how many factories were added to work " << endl;
-        n = GetCorrectNumber(0, (station.num - station.num_process));
-        station.num_process = station.num_process + n;
+    if (station.id != 0) {
+        cout << "Enter 1 if factories were added to work or 0 if factories were excluded from work" << endl;
+        do {
+            variant = _getch();
+            if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+        } while (variant != '0' && variant != '1');
+        if (variant == '1') {
+            cout << "Enter how many factories were added to work " << endl;
+            n = GetCorrectNumber(0, (station.num - station.num_process));
+            station.num_process = station.num_process + n;
+        }
+        else {
+            cout << "Enter how many factories were excluded from work " << endl;
+            n = GetCorrectNumber(0, (station.num_process));
+            station.num_process = station.num_process - n;
+        }
     }
-    else cout << "Enter how many factories were ecluded from work " << endl;
-         n = GetCorrectNumber(0, (station.num_process));
-         station.num_process = station.num_process - n;
-
+    else cout << "No station to edit" << endl;
 }
 
 void save_pipe(Pipe& pipe, ofstream& fout)
@@ -172,6 +189,7 @@ void save_pipe(Pipe& pipe, ofstream& fout)
         fout << pipe.id << endl
             << pipe.length << endl
             << pipe.diameter << endl;
+
     }
 
 }
@@ -185,7 +203,7 @@ void save_station(Station& station, ofstream& fout)
             << station.num << endl
             << station.num_process << endl
             << station.eff << endl;
-        
+     
     }
 }
 
@@ -196,6 +214,9 @@ int main()
     Station station;
     station.id = 0;
     pipe.id = 0;
+    int k, c;
+    k = 0;
+    c = 0;
     while (1)
     {
     print_menu();
@@ -226,10 +247,14 @@ int main()
 
     {   ofstream fout;
         fout.open("data.txt", ios::out);
-        if (station.id != 0)
+        if (station.id != 0) {
             save_station(station, fout);
-        if (pipe.id != 0)
+            c++;
+        }
+        if (pipe.id != 0) {
             save_pipe(pipe, fout);
+            k++;
+        }
         fout.close();
         break;
     }
@@ -238,7 +263,7 @@ int main()
     {   ifstream fin;
         fin.open("data.txt", ios::in);
 
-        if (station.id == 0) {
+        if (station.id == 0 || c==0 ) {
             cout << "No station" << endl;
         }
         else
@@ -247,7 +272,7 @@ int main()
             print_station(station);
         }
 
-        if (pipe.id == 0) {
+        if (pipe.id == 0 || k==0 ) {
             cout << "No pipe" << endl;
         }
         else {
