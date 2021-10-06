@@ -34,12 +34,15 @@ T GetCorrectNumber(T min)
     return x;
 }
 
+
 void print_pipe(Pipe& pipe)
 {
     cout << "Information about pipe: " << endl
          << "\tId: " << pipe.id  
          << "\tLength: "  << pipe.length  
          << "\tDiameter: " << pipe.diameter << endl;
+    pipe_process(pipe);
+          
     
 }
 
@@ -58,11 +61,8 @@ Pipe input_pipe()
     variant = _getch();
     if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
      } while (variant != '0' && variant != '1');
-    variant == '1' ? pipe.in_process = true : pipe.in_process = false;
-    if (pipe.in_process)
-        cout << "Pipe in process" << endl;
-    else 
-        cout << "Pipe is not in process" << endl;
+    variant == '1'?pipe.in_process = true:pipe.in_process = false;
+    pipe_process(pipe);
     return pipe;
 }
 
@@ -71,9 +71,12 @@ Pipe load_pipe(ifstream& fin)
    
     if (fin.is_open()) {
         Pipe pipe;
+        string s;
         fin >> pipe.id;
         fin >> pipe.length;
         fin >> pipe.diameter;
+        fin >> s;
+        s == "Processed" ? pipe.in_process = true : pipe.in_process = false;
         return pipe;
     }
 }
@@ -136,7 +139,6 @@ void pipe_process(Pipe& pipe)
         cout << "Pipe in process" << endl;
     else
         cout << "Pipe is not in process" << endl;
-    pipe.in_process = !pipe.in_process;
 }
 
 void edit_pipe(Pipe& pipe)
@@ -189,6 +191,8 @@ void save_pipe(Pipe& pipe, ofstream& fout)
         fout << pipe.id << endl
             << pipe.length << endl
             << pipe.diameter << endl;
+        if (pipe.in_process == true) fout << "Processed";
+        else fout << "Not processed";
 
     }
 
