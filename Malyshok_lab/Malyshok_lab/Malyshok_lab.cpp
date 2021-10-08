@@ -9,7 +9,7 @@
 using namespace std;
 template <typename T>
 
-T GetCorrectNumber(T min, T max)
+T GetCorrectNumber1(T min, T max)
 {
     T x;
     while ((cin >> x).fail() || x < min || x > max)
@@ -22,7 +22,7 @@ T GetCorrectNumber(T min, T max)
 }
 
 template <typename T>
-T GetCorrectNumber(T min)
+T GetCorrectNumber2(T min)
 {
     T x;
     while ((cin >> x).fail() || x < min)
@@ -53,15 +53,15 @@ Pipe input_pipe()
     pipe.id = 1;
     cout << "Please, enter the information about pipe " << endl;
     cout << "Enter the length: ";
-    pipe.length = GetCorrectNumber(0);
+    pipe.length = GetCorrectNumber2(0);
     cout << "Enter the diameter: ";
-    pipe.diameter = GetCorrectNumber(0);
+    pipe.diameter = GetCorrectNumber2(0);
     cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
     do {
     variant = _getch();
     if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
      } while (variant != '0' && variant != '1');
-    variant == '1'?pipe.in_process = true:pipe.in_process = false;
+     pipe.in_process = variant == '1';
     pipe_process(pipe);
     return pipe;
 }
@@ -105,11 +105,11 @@ Station input_station()
     cin.ignore(10000, '\n');
     getline(cin, station.name);
     cout << "Enter the number of factories: ";
-    cin >> station.num;
+    station.num =  GetCorrectNumber2(0);
     cout << "Enter the number of factories in process: ";
-    station.num_process = GetCorrectNumber(0, station.num);
+    station.num_process = GetCorrectNumber1(0, station.num);
     cout << "Enter the efficiency: ";
-    station.eff = GetCorrectNumber(0, 100);
+    station.eff = GetCorrectNumber1(0, 100);
     return station;
 }
 
@@ -139,7 +139,7 @@ void print_menu()
 void pipe_process(const Pipe& pipe)
 {
     if (pipe.in_process)
-        cout << "Pipe in process" << endl;
+        cout << "Pipe is in process" << endl;
     else
         cout << "Pipe is not in process" << endl;
 }
@@ -175,12 +175,12 @@ void edit_station(Station& station)
         } while (variant != '0' && variant != '1');
         if (variant == '1') {
             cout << "Enter how many factories were added to work " << endl;
-            n = GetCorrectNumber(0, (station.num - station.num_process));
+            n = GetCorrectNumber1(0, (station.num - station.num_process));
             station.num_process = station.num_process + n;
         }
         else {
             cout << "Enter how many factories were excluded from work " << endl;
-            n = GetCorrectNumber(0, (station.num_process));
+            n = GetCorrectNumber1(0, (station.num_process));
             station.num_process = station.num_process - n;
         }
     }
@@ -226,7 +226,7 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber(0,7))
+    switch (GetCorrectNumber1(0,7))
     {
     case 1:
     {
@@ -274,8 +274,6 @@ int main()
         else fout << 0 << endl;
          if (station.id != 0) 
             save_station(station, fout);
-        else 
-            fout << 0 << endl;
         if (pipe.id != 0) 
             save_pipe(pipe, fout);
 
