@@ -1,11 +1,6 @@
+0
 1
 1
-1
-12
-43
-43
-12
-1
-21
-3
-Processed
+80
+8
+Not processed

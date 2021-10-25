@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "Malyshok_lab.h"
 #include <fstream>
-
+#include <vector>
 
 using namespace std;
 template <typename T>
@@ -46,12 +46,12 @@ void print_pipe(const Pipe& pipe)
     
 }
 
-Pipe input_pipe()
+Pipe input_pipe(int id)
 {
     char variant;
     Pipe pipe;
-    pipe.id = 1;
     cout << "Please, enter the information about pipe " << endl;
+    pipe.id = id;
     cout << "Enter the length: ";
     pipe.length = GetCorrectNumber2(0);
     cout << "Enter the diameter: ";
@@ -96,11 +96,11 @@ Station load_station(ifstream& fin)
     return {};
 }
 
-Station input_station()
+Station input_station(int id)
 {
     Station station;
-    station.id = 1;
     cout << "Please, enter the information about station "<< endl;
+    station.id = id;
     cout << "Enter the name: ";
     cin.ignore(10000, '\n');
     getline(cin, station.name);
@@ -213,77 +213,104 @@ void save_station(const Station& station, ofstream& fout)
      
     }
 }
+Pipe& SelectPipe(vector<Pipe>& p)
+{
+    cout << "Enter index: " << endl;
+    unsigned int index = GetCorrectNumber1<uint64_t>(1, p.size());
+    return p[index - 1];
+ }
+
+Station& SelectStation(vector<Station>& s)
+{
+    cout << "Enter index: " << endl;
+    unsigned int index = GetCorrectNumber1<uint64_t>(1, s.size());
+    return s[index - 1];
+}
 
 int main()
 {
     
-    Pipe pipe = {};
-    Station station;
-    station.id = 0;
-    pipe.id = 0;
-    int stationcount = 0;
-    int pipecount = 0;
+   // Pipe pipe;
+    //Station station;
+    vector <Pipe> pipes = {};
+    vector <Station> stations = {};
+    int stationcount = 1;
+    int pipecount = 1;
     while (1)
     {
     print_menu();
     switch (GetCorrectNumber1(0,7))
     {
     case 1:
-    {
-        pipe = input_pipe();
+    {   Pipe pipe;
+        pipes.emplace_back(input_pipe(pipecount));
+        pipecount++;
+        //pipe = input_pipe();
         break;
     }
     case 2:
     {
-        station = input_station();
+        Station station;
+        stations.emplace_back(input_station(stationcount));
+        stationcount++;
         break;
     }
     case 3:
     {
-        edit_pipe(pipe);
+        edit_pipe(SelectPipe(pipes));
         break;
     }
     case 4:
     {   
-        edit_station(station);
+        edit_station(SelectStation(stations));
         break;
     }
 
     case 5:
-    {  if (station.id != 0) 
+    { /* if (station.id != 0) 
             print_station(station);
     else 
             cout << "No station" << endl;
         if (pipe.id != 0)
-            print_pipe(pipe);
+           print_pipe(pipe);
         else 
-            cout << "No pipe" << endl;
+            cout << "No pipe" << endl;*/
+        int variant;
+        cout << "Enter 1 if you want to show pipes, 0 if you want to show stations  " << endl;
+        do {
+            variant = _getch();
+            if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+        } while (variant != '0' && variant != '1');
+        if (variant == '1') {
+            print_station(SelectStation(stations));
+        }
+        else 
+        print_pipe(SelectPipe(pipes));
         break;
     }
 
     case 6:
 
-    {   ofstream fout;
+    {   /*ofstream fout;
         fout.open("data.txt", ios::out);
-        if (station.id != 0) 
-            fout << 1 << endl;
+        if (stationcount != 1) 
+            fout << stationcount - 1 << endl;
         else fout << 0 << endl;
-
-        if (pipe.id != 0) 
-            fout << 1 << endl;
+        if (pipecount != 1) 
+            fout << pipecount - 1 << endl;
         else fout << 0 << endl;
-         if (station.id != 0) 
+         if (stationcount != 1) 
             save_station(station, fout);
-        if (pipe.id != 0) 
+        if (pipecount != 1) 
             save_pipe(pipe, fout);
 
-        fout.close();
+        fout.close();*/
         break;
     }
 
     case 7:
     {
-        ifstream fin;
+        /*ifstream fin;
         fin.open("data.txt", ios::in);
         fin >> stationcount;
         fin >> pipecount;
@@ -303,7 +330,7 @@ int main()
             pipe = load_pipe(fin);
             print_pipe(pipe);
         }
-        fin.close();
+        fin.close();*/
         break;
     }
 
