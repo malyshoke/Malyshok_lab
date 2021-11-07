@@ -24,26 +24,14 @@ T GetCorrectNumber1(T min, T max)
 template <typename T>
 T GetCorrectNumber2(T min)
 {
-    T x;
-    while ((cin >> x).fail() || x < min)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Type number (0...): ";
-    }
-    return x;
-}
-
-
-void print_pipe(const Pipe& pipe)
+T x;
+while ((cin >> x).fail() || x < min)
 {
-    cout << "Information about pipe: " << endl
-         << "\tId: " << pipe.id  
-         << "\tLength: "  << pipe.length  
-         << "\tDiameter: " << pipe.diameter << endl;
-    pipe_process(pipe);
-          
-    
+    cin.clear();
+    cin.ignore(10000, '\n');
+    cout << "Type number (0...): ";
+}
+return x;
 }
 
 Pipe input_pipe(int id)
@@ -58,17 +46,17 @@ Pipe input_pipe(int id)
     pipe.diameter = GetCorrectNumber2(0);
     cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
     do {
-    variant = _getch();
-    if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-     } while (variant != '0' && variant != '1');
-     pipe.in_process = variant == '1';
+        variant = _getch();
+        if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+    } while (variant != '0' && variant != '1');
+    pipe.in_process = variant == '1';
     pipe_process(pipe);
     return pipe;
 }
 
 Pipe load_pipe(ifstream& fin)
 {
-   
+
     if (fin.is_open()) {
         Pipe pipe;
         string s;
@@ -83,7 +71,7 @@ Pipe load_pipe(ifstream& fin)
 }
 
 Station load_station(ifstream& fin)
-{  
+{
     if (fin.is_open()) {
         Station station;
         fin >> station.id;
@@ -96,16 +84,17 @@ Station load_station(ifstream& fin)
     return {};
 }
 
+
 Station input_station(int id)
 {
     Station station;
-    cout << "Please, enter the information about station "<< endl;
+    cout << "Please, enter the information about station " << endl;
     station.id = id;
     cout << "Enter the name: ";
     cin.ignore(10000, '\n');
     getline(cin, station.name);
     cout << "Enter the number of factories: ";
-    station.num =  GetCorrectNumber2(0);
+    station.num = GetCorrectNumber2(0);
     cout << "Enter the number of factories in process: ";
     station.num_process = GetCorrectNumber1(0, station.num);
     cout << "Enter the efficiency: ";
@@ -113,14 +102,35 @@ Station input_station(int id)
     return station;
 }
 
+void print_pipe(const Pipe& pipe)
+{
+    //cout << "Information about pipe: " << endl
+    cout << "\tId: " << pipe.id 
+        << "\tLength: " << pipe.length
+        << "\tDiameter: " << pipe.diameter << endl;
+    pipe_process(pipe);
+    cout << endl;
+}
+
 void print_station(const Station& station)
 {
-    cout << "Information about station: " << endl 
-         << "\tId: " << station.id  
-         << "\tName: " << station.name << endl 
-         << "\tNumber of factories: " << station.num << endl
-         << "\tNumber of factories in process: " << station.num_process << endl
-         << "\tEfficiency: " << station.eff << endl;
+    //cout << "Information about station: " << endl
+      cout << "\tId: " << station.id
+        << "\tName: " << station.name << endl
+        << "\tNumber of factories: " << station.num << endl
+        << "\tNumber of factories in process: " << station.num_process << endl
+        << "\tEfficiency: " << station.eff << endl;
+      cout << endl; 
+}
+
+void print_pipes(const vector<Pipe>& pipes)
+{
+    for (auto& p : pipes) print_pipe(p);
+}
+
+void print_stations(const vector<Station>& stations)
+{
+    for (auto& s : stations) print_station(s);
 }
 
 void print_menu()
@@ -275,17 +285,34 @@ int main()
            print_pipe(pipe);
         else 
             cout << "No pipe" << endl;*/
-        int variant;
+            /*for (auto& pipe : pipes)
+            print_pipe;
+        break;*/
+
+        /*int variant;
         cout << "Enter 1 if you want to show pipes, 0 if you want to show stations  " << endl;
         do {
             variant = _getch();
             if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
         } while (variant != '0' && variant != '1');
         if (variant == '1') {
-            print_station(SelectStation(stations));
+            print_pipe(SelectPipe(pipes));
         }
         else 
-        print_pipe(SelectPipe(pipes));
+        print_station(SelectStation(stations));
+        break;*/
+        cout << "Information about pipes:" << endl;
+        if (pipes.size() == 0) {
+            cout << "No pipes:" << endl;
+        }
+        else
+        print_pipes(pipes);
+        cout << "Information about stations:" << endl;
+        if (stations.size() == 0) {
+            cout << "No stations" << endl;
+        }
+        else
+            print_stations(stations);
         break;
     }
 
