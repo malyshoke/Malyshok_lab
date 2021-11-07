@@ -156,28 +156,21 @@ void pipe_process(const Pipe& pipe)
 
 void edit_pipe(Pipe& pipe)
 {
-    char variant;
-    if (pipe.id != 0)
-    {
-        cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
+    /*char variant;
+        /*cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
         do {
             variant = _getch();
             if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
         } while (variant != '0' && variant != '1');
-        pipe.in_process = variant == '1';
+        pipe.in_process = variant == '1';*/
+        pipe.in_process = !pipe.in_process;
         pipe_process(pipe);
-    }
-    else
-    {
-        cout << "No pipe to edit" << endl;
-    }
 }
 
 void edit_station(Station& station)
 {
     int n;
     char variant;
-    if (station.id != 0) {
         cout << "Enter 1 if factories were added to work or 0 if factories were excluded from work" << endl;
         do {
             variant = _getch();
@@ -193,8 +186,6 @@ void edit_station(Station& station)
             n = GetCorrectNumber1(0, (station.num_process));
             station.num_process = station.num_process - n;
         }
-    }
-    else cout << "No station to edit" << endl;
 }
 
 void save_pipe(const Pipe& pipe, ofstream& fout)
@@ -265,15 +256,25 @@ int main()
         stationcount++;
         break;
     }
+
     case 3:
-    {
-        edit_pipe(SelectPipe(pipes));
-        break;
+    {   if (pipes.size() == 0) {
+        cout << "No pipe to edit" << endl;
     }
+    else {
+        edit_pipe(SelectPipe(pipes));
+    }
+    break;
+    }
+
     case 4:
-    {   
+    {   if (stations.size() == 0) {
+        cout << "No station to edit" << endl;
+    }
+    else {
         edit_station(SelectStation(stations));
-        break;
+    }
+    break;
     }
 
     case 5:
@@ -301,15 +302,15 @@ int main()
         else 
         print_station(SelectStation(stations));
         break;*/
-        cout << "Information about pipes:" << endl;
+        cout << "information about pipes:" << endl;
         if (pipes.size() == 0) {
-            cout << "No pipes:" << endl;
+            cout << "no pipes" << endl;
         }
         else
         print_pipes(pipes);
-        cout << "Information about stations:" << endl;
+        cout << "information about stations:" << endl;
         if (stations.size() == 0) {
-            cout << "No stations" << endl;
+            cout << "no stations" << endl;
         }
         else
             print_stations(stations);
