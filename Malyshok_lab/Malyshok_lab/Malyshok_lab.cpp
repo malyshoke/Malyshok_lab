@@ -54,6 +54,22 @@ Pipe input_pipe(int id)
     return pipe;
 }
 
+Station input_station(int id)
+{
+    Station station;
+    cout << "Please, enter the information about station " << endl;
+    station.id = id;
+    cout << "Enter the name: ";
+    cin.ignore(10000, '\n');
+    getline(cin, station.name);
+    cout << "Enter the number of factories: ";
+    station.num = GetCorrectNumber2(0);
+    cout << "Enter the number of factories in process: ";
+    station.num_process = GetCorrectNumber1(0, station.num);
+    cout << "Enter the efficiency: ";
+    station.eff = GetCorrectNumber1(0, 100);
+    return station;
+}
 Pipe load_pipe(ifstream& fin)
 {
 
@@ -63,8 +79,7 @@ Pipe load_pipe(ifstream& fin)
         fin >> pipe.id;
         fin >> pipe.length;
         fin >> pipe.diameter;
-        fin >> s;
-        s == "Processed" ? pipe.in_process = true : pipe.in_process = false;
+        fin >> pipe.in_process;
         return pipe;
     }
     return {};
@@ -84,23 +99,47 @@ Station load_station(ifstream& fin)
     return {};
 }
 
-
-Station input_station(int id)
+void load_all(vector <Pipe>& pipes, vector <Station>& stations)
 {
-    Station station;
-    cout << "Please, enter the information about station " << endl;
-    station.id = id;
-    cout << "Enter the name: ";
-    cin.ignore(10000, '\n');
-    getline(cin, station.name);
-    cout << "Enter the number of factories: ";
-    station.num = GetCorrectNumber2(0);
-    cout << "Enter the number of factories in process: ";
-    station.num_process = GetCorrectNumber1(0, station.num);
-    cout << "Enter the efficiency: ";
-    station.eff = GetCorrectNumber1(0, 100);
-    return station;
+    int pipecount, stationcount;
+    ifstream fin;
+    string str;
+    fin.open("data.txt");
+    getline(fin, str);
+    pipecount = stoi(str);
+    getline(fin, str);
+    stationcount = stoi(str);
+    if (pipecount != 0) {
+        pipes.resize(pipecount);
+        for (int i = 0; i < pipes.size(); ++i) {
+            getline(fin, str);
+            pipes[i].id = stoi(str);
+            getline(fin, str);
+            pipes[i].length = stod(str);
+            getline(fin, str);
+            pipes[i].diameter = stoi(str);
+            getline(fin, str);
+            pipes[i].in_process = stoi(str);
+        }
+    }
+    if (stationcount != 0) {
+        stations.resize(stationcount);
+        for (int i = 0; i < stations.size(); ++i) {
+            getline(fin, str);
+            stations[i].id = stoi(str);
+            getline(fin, str);
+            stations[i].name = str;
+            getline(fin, str);
+            stations[i].num = stoi(str);
+            getline(fin, str);
+            stations[i].num_process = stoi(str);
+            getline(fin, str);
+            stations[i].eff = stoi(str);
+        }
+    }
 }
+
+
 
 void print_pipe(const Pipe& pipe)
 {
@@ -195,9 +234,6 @@ void save_pipe(const Pipe& pipe, ofstream& fout)
             << pipe.length << endl
             << pipe.diameter << endl
             << pipe.in_process << endl;
-        /*if (pipe.in_process == true) fout << "Processed";
-        else fout << "Not processed";*/
-
     }
 
 }
@@ -252,12 +288,14 @@ int main()
     case 1:
     {   Pipe pipe;
         pipes.emplace_back(input_pipe(pipecount));
+        pipecount++;
         break;
     }
     case 2:
     {
         Station station;
         stations.emplace_back(input_station(stationcount));
+        stationcount++;
         break;
     }
 
@@ -308,38 +346,38 @@ int main()
         if (stations.size() != 0)
             fout << stations.size() << endl;
         else fout << 0 << endl;
-        if (stations.size() != 0)
-            save_stations(stations, fout);
         if (pipes.size() != 0)
             save_pipes(pipes, fout);
-
+        if (stations.size() != 0)
+            save_stations(stations, fout);
         fout.close();
         break;
     }
 
     case 7:
     {
-        /*ifstream fin;
-        fin.open("data.txt", ios::in);
-        fin >> pipecount;
-        fin >> stationcount;
-        if (stationcount == 0) {
-            cout << "No station" << endl;
-        }
-        else
-        {
-            station = load_station(fin);
-            print_station(station);
-        }
+        //ifstream fin;
+        //fin.open("data.txt", ios::in);
+        //fin >> pipecount;
+        //fin >> stationcount;
+        //if (stationcount == 0) {
+        //    cout << "No stations" << endl;
+        //}
+        //else
+        //{
+        //    station = load_station(fin);
+        //    print_station(station);
+        //}
 
-        if (pipecount == 0) {
-            cout << "No pipe" << endl;
-        }
-        else {
-            pipe = load_pipe(fin);
-            print_pipe(pipe);
-        }
-        fin.close();*/
+        //if (pipecount == 0) {
+        //    cout << "No pipes" << endl;
+        //}
+        //else {
+        //    pipe = load_pipe(fin);
+        //    print_pipe(pipe);
+        //}
+        //fin.close();
+        load_all(pipes, stations);
         break;
     }
 
