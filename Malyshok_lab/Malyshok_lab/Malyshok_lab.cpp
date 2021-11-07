@@ -22,6 +22,18 @@ T GetCorrectNumber1(T min, T max)
 }
 
 template <typename T>
+int SearchId(const T& vector, int id)
+{
+        int i = 0;
+        for (auto& p : vector) {
+            if (p.id == id) return i;
+            ++i;
+        }
+        return -1;
+
+}
+
+template <typename T>
 T GetCorrectNumber2(T min)
 {
 T x;
@@ -177,8 +189,10 @@ void print_menu()
         << "3. Edit pipe" << endl
         << "4. Edit station" << endl
         << "5. Show " << endl
-        << "6. Save" << endl
-        << "7. Load " << endl
+        << "6. Delete pipe" << endl
+        << "7. Delete station" << endl
+        << "8. Save" << endl
+        << "9. Load " << endl
         << "0. Exit" << endl;
 }
 
@@ -192,13 +206,6 @@ void pipe_process(const Pipe& pipe)
 
 void edit_pipe(Pipe& pipe)
 {
-    /*char variant;
-        /*cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
-        do {
-            variant = _getch();
-            if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-        } while (variant != '0' && variant != '1');
-        pipe.in_process = variant == '1';*/
         pipe.in_process = !pipe.in_process;
         pipe_process(pipe);
 }
@@ -224,6 +231,29 @@ void edit_station(Station& station)
         }
 }
 
+template <typename T>
+void del_object(T& vector, int i)
+{
+    if (i < vector.size()) {
+        vector.erase(vector.begin() + i);
+    }
+}
+
+template <typename T>
+void del(T& vector)
+{
+    cout << endl << "Type id: ";
+    while (true) {
+        int id = GetCorrectNumber2(0);
+        int i = SearchId(vector, id);
+        if (i < vector.size() && i != -1) {
+            del_object(vector, i);
+            cout << "Object was deleted" << endl;
+            return;
+        }
+        else cout << "No object with this id" << endl;
+    }
+}
 void save_pipe(const Pipe& pipe, ofstream& fout)
 {   
    
@@ -281,7 +311,7 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber1(0,7))
+    switch (GetCorrectNumber1(0,9))
     {
     case 1:
     {   Pipe pipe;
@@ -335,50 +365,55 @@ int main()
     }
 
     case 6:
-    {   string name = "";
+    {  
+        if (pipes.size() == 0)
+            cout << "No pipes to delete" << endl;
+        else {
+            print_pipes(pipes);
+            del(pipes);
+    }
+        break;
+    }
+
+    case 7:
+    {
+        if (stations.size() == 0)
+            cout << "No stations to delete" << endl;
+        else {
+            print_stations(stations);
+            del(stations);
+        }
+        break;
+    }
+
+    case 8:
+    {
+        string name = "";
         cout << "Type name of file: ";
         cin.ignore(10000, '\n');
         getline(cin, name);
         name = name + ".txt";
         ofstream fout;
         fout.open(name, ios::out);
-        if (pipes.size() !=0 ) 
-            fout << pipes.size() << endl;
-        else fout << 0 << endl;
-        if (stations.size() != 0)
-            fout << stations.size() << endl;
-        else fout << 0 << endl;
-        if (pipes.size() != 0)
-            save_pipes(pipes, fout);
-        if (stations.size() != 0)
-            save_stations(stations, fout);
+        if (!fout.is_open())
+            cout << "Unable to open file" << endl;
+        else {
+            if (pipes.size() != 0)
+                fout << pipes.size() << endl;
+            else fout << 0 << endl;
+            if (stations.size() != 0)
+                fout << stations.size() << endl;
+            else fout << 0 << endl;
+            if (pipes.size() != 0)
+                save_pipes(pipes, fout);
+            if (stations.size() != 0)
+                save_stations(stations, fout);
+        }
         fout.close();
         break;
     }
-
-    case 7:
+    case 9:
     {
-        //ifstream fin;
-        //fin.open("data.txt", ios::in);
-        //fin >> pipecount;
-        //fin >> stationcount;
-        //if (stationcount == 0) {
-        //    cout << "No stations" << endl;
-        //}
-        //else
-        //{
-        //    station = load_station(fin);
-        //    print_station(station);
-        //}
-
-        //if (pipecount == 0) {
-        //    cout << "No pipes" << endl;
-        //}
-        //else {
-        //    pipe = load_pipe(fin);
-        //    print_pipe(pipe);
-        //}
-        //fin.close();
         string name = " ";
         cout << "Type name of file: ";
         cin.ignore(10000, '\n');
@@ -386,10 +421,13 @@ int main()
         name = name + ".txt";
         ifstream fin;
         fin.open(name, ios::in);
-        load_all(pipes, stations, fin);
+        if (!fin.is_open())
+            cout << "Unable to open file" << endl;
+        else
+            load_all(pipes, stations, fin);
+        fin.close();
         break;
     }
-
     case 0:
     {
         return 0;
