@@ -99,12 +99,10 @@ Station load_station(ifstream& fin)
     return {};
 }
 
-void load_all(vector <Pipe>& pipes, vector <Station>& stations)
+void load_all(vector <Pipe>& pipes, vector <Station>& stations, ifstream& fin)
 {
     int pipecount, stationcount;
-    ifstream fin;
     string str;
-    fin.open("data.txt");
     getline(fin, str);
     pipecount = stoi(str);
     getline(fin, str);
@@ -337,9 +335,13 @@ int main()
     }
 
     case 6:
-
-    {   ofstream fout;
-        fout.open("data.txt", ios::out);
+    {   string name = "";
+        cout << "Type name of file: ";
+        cin.ignore(10000, '\n');
+        getline(cin, name);
+        name = name + ".txt";
+        ofstream fout;
+        fout.open(name, ios::out);
         if (pipes.size() !=0 ) 
             fout << pipes.size() << endl;
         else fout << 0 << endl;
@@ -377,7 +379,14 @@ int main()
         //    print_pipe(pipe);
         //}
         //fin.close();
-        load_all(pipes, stations);
+        string name = " ";
+        cout << "Type name of file: ";
+        cin.ignore(10000, '\n');
+        getline(cin, name);
+        name = name + ".txt";
+        ifstream fin;
+        fin.open(name, ios::in);
+        load_all(pipes, stations, fin);
         break;
     }
 
