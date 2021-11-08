@@ -349,17 +349,17 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber1(0, 10))
+    switch (GetCorrectNumber1(0,10))
     {
     case 1:
     {   Pipe pipe;
-    pipes.emplace_back(input_pipe(pipes.size() + 1));
-    break;
+        pipes.emplace_back(input_pipe(pipes.size()+1));
+        break;
     }
     case 2:
     {
         Station station;
-        stations.emplace_back(input_station(stations.size() + 1));
+        stations.emplace_back(input_station(stations.size()+1));
         break;
     }
 
@@ -390,7 +390,7 @@ int main()
             cout << "No pipes" << endl;
         }
         else
-            print_pipes(pipes);
+        print_pipes(pipes);
         cout << "Information about stations:" << endl;
         if (stations.size() == 0) {
             cout << "No stations" << endl;
@@ -401,13 +401,13 @@ int main()
     }
 
     case 6:
-    {
+    {  
         if (pipes.size() == 0)
             cout << "No pipes to delete" << endl;
         else {
             print_pipes(pipes);
             del(pipes);
-        }
+    }
         break;
     }
 
@@ -424,56 +424,46 @@ int main()
 
     case 8:
     {   //поиск по имени
-        //cout << "Type name of pipe: ";
-        //cin.ignore(10000, '\n');
-        //getline(cin, name);
-        //int i = search_name(pipes, name);
-        //if (i != -1) {
-        //    cout << "Pipes with this name" << endl;
-        //    print_pipe(pipes[i]);
-        //}
-        //else
-        //    cout << "No pipes with this name" << endl;
-
-        char variant;
-        cout << "Enter 1 if the search pipe is under repair, 0 if not under repair: ";
-        variant = getchar();
-        cout << endl;
-        do {
-            variant = _getch();
-            if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-        } while (variant != '0' && variant != '1');
-        (variant == '1') ? cout << "Pipes is in process: " << endl : cout << "Pipes is not in process: " << endl;
-        vector<int> index = search_repair(pipes, (variant == '1') ? true : false);
-        if (index.size() != 0) {
-            for (auto& p : index) {
-                print_pipe(pipes[p]);
-            }
-        }
-        else cout << "No pipes" << endl;
-        
         string name = "";
         cout << "Type name of station: ";
+        cin.ignore(10000, '\n');
         getline(cin, name);
         int i = search_name(stations, name);
         if (i != -1) {
-            cout << "Stations with this name: " << endl;
+            cout << "Stations with this name" << endl;
             print_station(stations[i]);
         }
-        else
+        else 
             cout << "No stations with this name" << endl;
+        //поиск по признаку "в ремонте"
+        char variant;
+        cout << "Enter 1 if the search pipe is under repair, 0 if not under repair: " ;
+        variant = getchar();
+        (variant == '1') ? cout << "Pipes is in process: " << endl : cout << "Pipes is not in process:" << endl;
+        if (variant == '1' || variant == '0'){
+            vector<int> index = search_repair(pipes, (variant == '1') ? true : false);
+            if (index.size() != 0) {
+                for (auto& p : index) {
+                    print_pipe(pipes[p]);
+                }
+            }
+            else cout << "No pipes" << endl;
 
+        }
+        else cout << "Enter the correct value" << endl;
+        //поиск по проценту задействованных цехов
         cout << "Type percentage of factories in process: ";
         double percent = GetCorrectNumber1(0, 100);
-        vector<int> ind = search_ratio(stations, percent);
-        if (ind.size() != 0) {
+        vector<int> index = search_ratio(stations, percent);
+        if (index.size() != 0) {
             cout << "Stations with this ratio: " << endl;
-            for (auto& i : ind) {
+            for (auto& i : index) {
                 print_station(stations[i]);
             }
         }
         else cout << "No stations" << endl;
-    break;
+        break;
+
     }
     case 9:
     {
