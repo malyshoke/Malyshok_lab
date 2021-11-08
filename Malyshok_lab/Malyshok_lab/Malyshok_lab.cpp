@@ -7,8 +7,8 @@
 #include <vector>
 
 using namespace std;
-template <typename T>
 
+template <typename T>
 T GetCorrectNumber1(T min, T max)
 {
     T x;
@@ -191,8 +191,9 @@ void print_menu()
         << "5. Show " << endl
         << "6. Delete pipe" << endl
         << "7. Delete station" << endl
-        << "8. Save" << endl
-        << "9. Load " << endl
+        << "8. Search station by name" << endl
+        << "9. Save" << endl
+        << "10. Load " << endl
         << "0. Exit" << endl;
 }
 
@@ -302,6 +303,43 @@ Station& SelectStation(vector<Station>& s)
     return s[index - 1];
 }
 
+template <typename T>
+int search_name(const vector<T>& t, string name)
+{
+    int i = 0;
+    for (auto& s : t) {
+        if (s.name == name)
+            return i;
+        ++i;
+
+    }
+    return -1;
+}
+
+vector<int> search_repair(const vector<Pipe>& pipes, const bool& r)
+{
+    int i = 0;
+    vector<int> index;
+    for (auto& p : pipes) {
+        if (p.in_process == r)
+            index.emplace_back(i);
+        ++i;
+    }
+    return index;
+}
+
+vector<int> search_ratio(const vector<Station>& stations, double per)
+{
+    int i = 0;
+    vector<int> index;
+    for (auto& s : stations) {
+        if (round(((double(s.num) - double(s.num_process)) / double(s.num)) * 100) == per)
+            index.emplace_back(i);
+        ++i;
+    }
+    return index;
+}
+
 int main()
 {
     vector <Pipe> pipes = {};
@@ -311,19 +349,17 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber1(0,9))
+    switch (GetCorrectNumber1(0, 10))
     {
     case 1:
     {   Pipe pipe;
-        pipes.emplace_back(input_pipe(pipecount));
-        pipecount++;
-        break;
+    pipes.emplace_back(input_pipe(pipes.size() + 1));
+    break;
     }
     case 2:
     {
         Station station;
-        stations.emplace_back(input_station(stationcount));
-        stationcount++;
+        stations.emplace_back(input_station(stations.size() + 1));
         break;
     }
 
@@ -354,7 +390,7 @@ int main()
             cout << "No pipes" << endl;
         }
         else
-        print_pipes(pipes);
+            print_pipes(pipes);
         cout << "Information about stations:" << endl;
         if (stations.size() == 0) {
             cout << "No stations" << endl;
@@ -365,13 +401,13 @@ int main()
     }
 
     case 6:
-    {  
+    {
         if (pipes.size() == 0)
             cout << "No pipes to delete" << endl;
         else {
             print_pipes(pipes);
             del(pipes);
-    }
+        }
         break;
     }
 
@@ -387,6 +423,59 @@ int main()
     }
 
     case 8:
+    {   //поиск по имени
+        //cout << "Type name of pipe: ";
+        //cin.ignore(10000, '\n');
+        //getline(cin, name);
+        //int i = search_name(pipes, name);
+        //if (i != -1) {
+        //    cout << "Pipes with this name" << endl;
+        //    print_pipe(pipes[i]);
+        //}
+        //else
+        //    cout << "No pipes with this name" << endl;
+
+        char variant;
+        cout << "Enter 1 if the search pipe is under repair, 0 if not under repair: ";
+        variant = getchar();
+        cout << endl;
+        do {
+            variant = _getch();
+            if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
+        } while (variant != '0' && variant != '1');
+        (variant == '1') ? cout << "Pipes is in process: " << endl : cout << "Pipes is not in process: " << endl;
+        vector<int> index = search_repair(pipes, (variant == '1') ? true : false);
+        if (index.size() != 0) {
+            for (auto& p : index) {
+                print_pipe(pipes[p]);
+            }
+        }
+        else cout << "No pipes" << endl;
+        
+        string name = "";
+        cout << "Type name of station: ";
+        getline(cin, name);
+        int i = search_name(stations, name);
+        if (i != -1) {
+            cout << "Stations with this name: " << endl;
+            print_station(stations[i]);
+        }
+        else
+            cout << "No stations with this name" << endl;
+
+        cout << "Type percentage of factories in process: ";
+        double percent = GetCorrectNumber1(0, 100);
+        vector<int> ind = search_ratio(stations, percent);
+        if (ind.size() != 0) {
+            cout << "Stations with this ratio: " << endl;
+            for (auto& i : ind) {
+                print_station(stations[i]);
+            }
+        }
+        else cout << "No stations" << endl;
+    break;
+    }
+    case 9:
     {
         string name = "";
         cout << "Type name of file: ";
@@ -412,7 +501,8 @@ int main()
         fout.close();
         break;
     }
-    case 9:
+       
+    case 10:
     {
         string name = " ";
         cout << "Type name of file: ";
@@ -423,11 +513,27 @@ int main()
         fin.open(name, ios::in);
         if (!fin.is_open())
             cout << "Unable to open file" << endl;
-        else
+        else {
             load_all(pipes, stations, fin);
+            cout << "Information about pipes:" << endl;
+            if (pipes.size() == 0) {
+                cout << "No pipes" << endl;
+            }
+            else
+                print_pipes(pipes);
+            cout << "Information about stations:" << endl;
+            if (stations.size() == 0) {
+                cout << "No stations" << endl;
+            }
+            else
+                print_stations(stations);
+            
+        }
         fin.close();
+        
         break;
     }
+
     case 0:
     {
         return 0;
