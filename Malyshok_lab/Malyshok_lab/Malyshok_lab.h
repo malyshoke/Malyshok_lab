@@ -20,14 +20,14 @@ struct  Station
     int eff;
 };
 
-void print_pipe(const Pipe& pipe);
+//void print_pipe(const pair <int, Pipe>& pipe);
 
-void print_station(const Station& station);
+//void print_station(const pair <int, Station>& station);
 
 void print_menu();
 
 void pipe_process(const Pipe& pipe);
 
-void input_station(Station& station);
+Station input_station();
 
-void input_pipe(Pipe& pipe);
+Pipe input_pipe();

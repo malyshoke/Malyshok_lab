@@ -5,6 +5,7 @@
 #include "Malyshok_lab.h"
 #include <fstream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -22,14 +23,10 @@ T GetCorrectNumber1(T min, T max)
 }
 
 template <typename T>
-int SearchId(const T& vector, int id)
+int SearchId(const T& map, int id)
 {
-        int i = 0;
-        for (auto& p : vector) {
-            if (p.id == id) return i;
-            ++i;
-        }
-        return -1;
+    if (map.find(id) != map.end()) return id;
+    return -1;
 
 }
 
@@ -46,12 +43,11 @@ while ((cin >> x).fail() || x < min)
 return x;
 }
 
-Pipe input_pipe(int id)
+Pipe input_pipe()
 {
     char variant;
     Pipe pipe;
     cout << "Please, enter the information about pipe " << endl;
-    pipe.id = id;
     cout << "Enter the length: ";
     pipe.length = GetCorrectNumber2(0);
     cout << "Enter the diameter: ";
@@ -66,11 +62,10 @@ Pipe input_pipe(int id)
     return pipe;
 }
 
-Station input_station(int id)
+Station input_station()
 {
     Station station;
     cout << "Please, enter the information about station " << endl;
-    station.id = id;
     cout << "Enter the name: ";
     cin.ignore(10000, '\n');
     getline(cin, station.name);
@@ -111,72 +106,68 @@ Station load_station(ifstream& fin)
     return {};
 }
 
-void load_all(vector <Pipe>& pipes, vector <Station>& stations, ifstream& fin)
+void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& stations, ifstream& fin)
 {
     int pipecount, stationcount;
     string str;
-    getline(fin, str);
-    pipecount = stoi(str);
-    getline(fin, str);
-    stationcount = stoi(str);
+    fin >> pipecount;
+    fin >> stationcount;
     if (pipecount != 0) {
-        pipes.resize(pipecount);
-        for (int i = 0; i < pipes.size(); ++i) {
-            getline(fin, str);
-            pipes[i].id = stoi(str);
-            getline(fin, str);
-            pipes[i].length = stod(str);
-            getline(fin, str);
-            pipes[i].diameter = stoi(str);
-            getline(fin, str);
-            pipes[i].in_process = stoi(str);
+        for (int i = 0; i < pipecount; ++i) {
+            Pipe mypipe;
+            int id;
+            fin >> id;
+            fin >> mypipe.length;
+            fin >> mypipe.diameter;
+            fin >> mypipe.in_process;
+            pipes.insert({ id, mypipe });
+
         }
     }
     if (stationcount != 0) {
-        stations.resize(stationcount);
-        for (int i = 0; i < stations.size(); ++i) {
+        for (int i = 0; i < stationcount; ++i) {
+            Station mystation;
+            int id;
+            fin >> id; 
             getline(fin, str);
-            stations[i].id = stoi(str);
             getline(fin, str);
-            stations[i].name = str;
-            getline(fin, str);
-            stations[i].num = stoi(str);
-            getline(fin, str);
-            stations[i].num_process = stoi(str);
-            getline(fin, str);
-            stations[i].eff = stoi(str);
+            mystation.name = str;
+            //fin >> mystation.name;
+            fin >> mystation.num;
+            fin >> mystation.num_process;
+            fin >> mystation.eff;
+            stations.insert({ id, mystation });
         }
     }
 }
 
 
 
-void print_pipe(const Pipe& pipe)
+void print_pipe(const pair <int, Pipe>& pipe)
 {
-    cout << "\tId: " << pipe.id 
-        << "\tLength: " << pipe.length
-        << "\tDiameter: " << pipe.diameter << endl;
-    pipe_process(pipe);
+    cout << "\tId: " << pipe.first
+        << "\tLength: " << pipe.second.length
+        << "\tDiameter: " << pipe.second.diameter << endl;
+    pipe_process(pipe.second);
     cout << endl;
 }
 
-void print_station(const Station& station)
+void print_station(const pair <int, Station>& station)
 {
-    //cout << "Information about station: " << endl
-      cout << "\tId: " << station.id
-        << "\tName: " << station.name << endl
-        << "\tNumber of factories: " << station.num << endl
-        << "\tNumber of factories in process: " << station.num_process << endl
-        << "\tEfficiency: " << station.eff << endl;
+      cout << "\tId: " << station.first
+        << "\tName: " << station.second.name << endl
+        << "\tNumber of factories: " << station.second.num << endl
+        << "\tNumber of factories in process: " << station.second.num_process << endl
+        << "\tEfficiency: " << station.second.eff << endl;
       cout << endl; 
 }
 
-void print_pipes(const vector<Pipe>& pipes)
+void print_pipes(const unordered_map <int, Pipe>& pipes)
 {
     for (auto& p : pipes) print_pipe(p);
 }
 
-void print_stations(const vector<Station>& stations)
+void print_stations(const unordered_map <int, Station>& stations)
 {
     for (auto& s : stations) print_station(s);
 }
@@ -205,10 +196,25 @@ void pipe_process(const Pipe& pipe)
         cout << "Pipe is not in process" << endl;
 }
 
-void edit_pipe(Pipe& pipe)
+void edit_pipe(Pipe & pipe)
 {
         pipe.in_process = !pipe.in_process;
-        pipe_process(pipe);
+        //pipe_process(pipe);
+}
+
+void edit_pipes(unordered_map <int, Pipe>& pipes)
+{
+    int id; 
+    cout << endl << "Type id: ";
+    while (true) {
+        int id = GetCorrectNumber2(0);
+        if (SearchId( pipes, id) != -1) {
+            edit_pipe(pipes[id]);
+            cout << "Object was edited" << endl;
+            return;
+        }
+        else cout << "No object with this id" << endl;
+    }
 }
 
 void edit_station(Station& station)
@@ -232,23 +238,37 @@ void edit_station(Station& station)
         }
 }
 
-template <typename T>
-void del_object(T& vector, int i)
+void edit_stations(unordered_map <int, Station>& stations)
 {
-    if (i < vector.size()) {
-        vector.erase(vector.begin() + i);
+    int id;
+    cout << endl << "Type id: ";
+    while (true) {
+        int id = GetCorrectNumber2(0);
+        if (SearchId(stations, id) != -1) {
+            edit_station(stations[id]);
+            cout << "Object was edited" << endl;
+            return;
+        }
+        else cout << "No object with this id" << endl;
     }
 }
 
 template <typename T>
-void del(T& vector)
+void del_object(T& map, int id)
+{
+    if (map.find(id) != map.end()) {
+        map.erase(id);
+    }
+}
+
+template <typename T>
+void del(T& map)
 {
     cout << endl << "Type id: ";
     while (true) {
         int id = GetCorrectNumber2(0);
-        int i = SearchId(vector, id);
-        if (i < vector.size() && i != -1) {
-            del_object(vector, i);
+        if (SearchId(map, id) != -1) {
+            del_object(map, id);
             cout << "Object was deleted" << endl;
             return;
         }
@@ -280,95 +300,119 @@ void save_station(const Station& station, ofstream& fout)
     }
 }
 
-void save_pipes(const vector<Pipe>& pipes, ofstream& fout)
+void save_pipes(const unordered_map <int, Pipe>& pipes, ofstream& fout)
 {
-    for (auto& p : pipes) save_pipe(p, fout);
+    for (auto& p : pipes)         
+        fout << p.first << endl
+        << p.second.length << endl
+        << p.second.diameter << endl
+        << p.second.in_process << endl;;
 }
 
-void save_stations(const vector<Station>& stations, ofstream& fout)
+void save_stations(const unordered_map <int, Station>& stations, ofstream& fout)
 {
-    for (auto& s : stations) save_station(s, fout);
+    for (auto& s : stations)         
+        fout << s.first << endl
+        << s.second.name << endl
+        << s.second.num << endl
+        << s.second.num_process << endl
+        << s.second.eff << endl;;
 }
-Pipe& SelectPipe(vector<Pipe>& p)
-{
-    cout << "Enter index: " << endl;
-    unsigned int index = GetCorrectNumber1<uint64_t>(1, p.size());
-    return p[index - 1];
- }
 
-Station& SelectStation(vector<Station>& s)
-{
-    cout << "Enter index: " << endl;
-    unsigned int index = GetCorrectNumber1<uint64_t>(1, s.size());
-    return s[index - 1];
-}
+//template <typename T>
+//T& select(const T& map)
+//{
+//    cout << endl << "Type id: ";
+//    while (true) {
+//        int id = GetCorrectNumber2(0);
+//        if (SearchId(map, id) != -1) {
+//
+//            return (map, id);
+//        }
+//        else cout << "No object with this id" << endl;
+//    }
+//}
+
+
+//
+//Pipe& SelectPipe(const unordered_map <int, Pipe>& p)
+//{
+//    cout << "Enter index: " << endl;
+//    unsigned int index = GetCorrectNumber1<uint64_t>(1, p.size());
+//    return { index, p[index-1] };
+// }
+
+//Station& SelectStation(const unordered_map <int, Station>& s)
+//{
+//    cout << "Enter index: " << endl;
+//    unsigned int index = GetCorrectNumber1<uint64_t>(1, s.size());
+//    return s[index - 1];
+//}
 
 template <typename T>
-int search_name(const vector<T>& t, string name)
+int search_name(const unordered_map <int, T>& t, string name)
 {
     int i = 0;
     for (auto& s : t) {
-        if (s.name == name)
-            return i;
-        ++i;
-
+        if (s.second.name == name)
+            return s.first;
     }
     return -1;
 }
 
-vector<int> search_repair(const vector<Pipe>& pipes, const bool& r)
+vector<int> search_repair(const unordered_map <int, Pipe>& pipes, const bool& r)
 {
     int i = 0;
     vector<int> index;
     for (auto& p : pipes) {
-        if (p.in_process == r)
-            index.emplace_back(i);
-        ++i;
+        if (p.second.in_process == r)
+            index.emplace_back(p.first);
     }
     return index;
 }
 
-vector<int> search_ratio(const vector<Station>& stations, double per)
+vector<int> search_ratio(const unordered_map <int, Station>& stations, double per)
 {
     int i = 0;
     vector<int> index;
     for (auto& s : stations) {
-        if (round(((double(s.num) - double(s.num_process)) / double(s.num)) * 100) == per)
-            index.emplace_back(i);
-        ++i;
+        if (round(((double(s.second.num) - double(s.second.num_process)) / double(s.second.num)) * 100) == per)
+            index.emplace_back(s.first);
     }
     return index;
 }
 
 int main()
 {
-    vector <Pipe> pipes = {};
-    vector <Station> stations = {};
+    unordered_map<int, Pipe> pipes;
+    unordered_map<int, Station> stations;
     int stationcount = 1;
     int pipecount = 1;
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber1(0,10))
+    switch (GetCorrectNumber1(0,11))
     {
     case 1:
-    {   Pipe pipe;
-        pipes.emplace_back(input_pipe(pipes.size()+1));
+    {  
+        int id = pipes.size() + 1;
+        pipes.insert({id, input_pipe()});
         break;
     }
     case 2:
     {
-        Station station;
-        stations.emplace_back(input_station(stations.size()+1));
+        int id = stations.size() + 1;
+        stations.insert({id, input_station()});
         break;
     }
 
     case 3:
-    {   if (pipes.size() == 0) {
+
+    {   if (pipes.size() == 0) 
         cout << "No pipe to edit" << endl;
-    }
     else {
-        edit_pipe(SelectPipe(pipes));
+        edit_pipes(pipes);
+        print_pipes(pipes);
     }
     break;
     }
@@ -378,7 +422,8 @@ int main()
         cout << "No station to edit" << endl;
     }
     else {
-        edit_station(SelectStation(stations));
+       edit_stations(stations);
+       print_stations(stations);
     }
     break;
     }
@@ -430,35 +475,38 @@ int main()
         getline(cin, name);
         int i = search_name(stations, name);
         if (i != -1) {
-            cout << "Stations with this name" << endl;
-            print_station(stations[i]);
+            cout << "Stations with this name: " << endl;
+            print_station({ i,stations[i] });
         }
         else 
             cout << "No stations with this name" << endl;
+
         //поиск по признаку "в ремонте"
         char variant;
-        cout << "Enter 1 if the search pipe is under repair, 0 if not under repair: " ;
-        variant = getchar();
-        (variant == '1') ? cout << "Pipes is in process: " << endl : cout << "Pipes is not in process:" << endl;
-        if (variant == '1' || variant == '0'){
-            vector<int> index = search_repair(pipes, (variant == '1') ? true : false);
-            if (index.size() != 0) {
-                for (auto& p : index) {
-                    print_pipe(pipes[p]);
+        cout << "Enter 1 if you want to search pipe is under repair, 0 if is not under repair: " << endl;
+        do {
+            variant = _getch();
+            if (variant != '0' && variant != '1') cout << endl << "Enter the correct value" << endl;
+        } while (variant != '0' && variant != '1'); 
+         if (variant == '1' || variant == '0') {
+          (variant == '1') ? cout << "Pipes is in process: " << endl : cout << "Pipes is not in process:" << endl; 
+                vector<int> index = search_repair(pipes, (variant == '1') ? true : false);
+                if (index.size() != 0) {
+                    for (auto& p : index) {
+                        print_pipe({ p,pipes[p] });
+                    }
                 }
+                else cout << "No pipes" << endl;
             }
-            else cout << "No pipes" << endl;
 
-        }
-        else cout << "Enter the correct value" << endl;
         //поиск по проценту задействованных цехов
-        cout << "Type percentage of factories in process: ";
+        cout << "Type percentage of factories is not in process: ";
         double percent = GetCorrectNumber1(0, 100);
         vector<int> index = search_ratio(stations, percent);
         if (index.size() != 0) {
             cout << "Stations with this ratio: " << endl;
             for (auto& i : index) {
-                print_station(stations[i]);
+                print_station({i,stations[i]});
             }
         }
         else cout << "No stations" << endl;
@@ -523,7 +571,7 @@ int main()
         
         break;
     }
-
+    
     case 0:
     {
         return 0;
