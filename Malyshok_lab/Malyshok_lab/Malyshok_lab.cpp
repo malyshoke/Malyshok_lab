@@ -268,7 +268,7 @@ void edit_pipe(Pipe & pipe)
         pipe.in_process = !pipe.in_process;
 }
 
-void edit_pipes(unordered_map <int, Pipe>& pipes)
+int edit_pipes(unordered_map <int, Pipe>& pipes)
 {
     int id; 
     cout << endl << "Type id: ";
@@ -277,7 +277,7 @@ void edit_pipes(unordered_map <int, Pipe>& pipes)
         if (SearchId( pipes, id) != -1) {
             edit_pipe(pipes[id]);
             cout << "Object was edited" << endl;
-            return;
+            return id;
         }
         else cout << "No object with this id" << endl;
     }
@@ -304,7 +304,7 @@ void edit_station(Station& station)
         }
 }
 
-void edit_stations(unordered_map <int, Station>& stations)
+int edit_stations(unordered_map <int, Station>& stations)
 {
     int id;
     cout << endl << "Type id: ";
@@ -313,7 +313,7 @@ void edit_stations(unordered_map <int, Station>& stations)
         if (SearchId(stations, id) != -1) {
             edit_station(stations[id]);
             cout << "Object was edited" << endl;
-            return;
+            return id;
         }
         else cout << "No object with this id" << endl;
     }
@@ -499,8 +499,14 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                 cout << "Found " << index.size() << " stations" << endl;
                 for (auto& id : index) {
                     print_station({ id, stations[id] });
-                    edit_station(stations[id]);
-                    print_station({ id, stations[id] });
+                    cout << "1. Edit found stations" << endl << "0. Exit" << endl;
+                    if (GetCorrectNumber2(0) == 1) {
+                        for (auto& id : index) {
+                            edit_station(stations[id]);
+                            print_station({ id, stations[id] });
+                        }
+                    }
+                    else break;
                 }
             }
             else
@@ -516,8 +522,14 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                     cout << "Found " << index.size() << " stations" << endl;
                     for (auto& id : index) {
                         print_station({ id, stations[id] });
-                        edit_station(stations[id]);
-                        print_station({ id, stations[id] });
+                        cout << "1. Edit found stations" << endl << "0. Exit" << endl;
+                        if (GetCorrectNumber2(0) == 1) {
+                            for (auto& id : index) {
+                                edit_station(stations[id]);
+                                print_station({ id, stations[id] });
+                            }
+                        }
+                        else break;
                     }
                 }
                 else
@@ -590,8 +602,8 @@ int main()
     {   if (pipes.size() == 0) 
         cout << "No pipe to edit" << endl;
     else {
-        edit_pipes(pipes);
-        print_pipes(pipes);
+        int id = edit_pipes(pipes);
+        print_pipe({ id, pipes[id] });
     }
     break;
     }
@@ -601,8 +613,8 @@ int main()
         cout << "No station to edit" << endl;
     }
     else {
-       edit_stations(stations);
-       print_stations(stations);
+       int id = edit_stations(stations);
+       print_station({ id, stations[id] });
     }
     break;
     }
