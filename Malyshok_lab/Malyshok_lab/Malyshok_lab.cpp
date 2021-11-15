@@ -159,7 +159,6 @@ void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& st
 }
 
 
-
 void print_pipe(const pair <int, Pipe>& pipe)
 {
     cout << "\tId: " << pipe.first

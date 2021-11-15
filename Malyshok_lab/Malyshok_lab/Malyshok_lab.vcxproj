@@ -162,6 +162,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Station.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

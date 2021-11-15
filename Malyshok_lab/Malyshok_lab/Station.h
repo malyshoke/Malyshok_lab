@@ -9,5 +9,7 @@ class Station
     int num;
     int num_process;
     int eff;
+    friend std::ostream& operator << (std::ostream& out, const Station& s);
+    friend std::istream& operator >> (std::istream& in, Station& s);
 };
 
