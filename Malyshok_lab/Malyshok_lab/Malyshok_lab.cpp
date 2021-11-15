@@ -3,6 +3,8 @@
 
 #include "pch.h"
 #include "Malyshok_lab.h"
+#include "Pipe.h"
+#include "Station.h"
 #include <fstream>
 #include <vector>
 #include <unordered_map>
@@ -43,6 +45,14 @@ while ((cin >> x).fail() || x < min)
 return x;
 }
 
+void pipe_process(const Pipe& pipe)
+{
+    if (pipe.in_process)
+        cout << "Pipe is in process" << endl;
+    else
+        cout << "Pipe is not in process" << endl;
+}
+
 Pipe input_pipe()
 {
     char variant;
@@ -52,9 +62,9 @@ Pipe input_pipe()
     cin.ignore(10000, '\n');
     getline(cin, pipe.name);
     cout << "Enter the length: ";
-    pipe.length = GetCorrectNumber2(0);
+    pipe.length = GetCorrectNumber2(0.);
     cout << "Enter the diameter: ";
-    pipe.diameter = GetCorrectNumber2(0);
+    pipe.diameter = GetCorrectNumber2(0.);
     cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
     do {
         variant = _getch();
@@ -252,13 +262,6 @@ void print_menu()
         << "0. Exit" << endl;
 }
 
-void pipe_process(const Pipe& pipe)
-{
-    if (pipe.in_process)
-        cout << "Pipe is in process" << endl;
-    else
-        cout << "Pipe is not in process" << endl;
-}
 
 void edit_pipe(Pipe & pipe)
 {
