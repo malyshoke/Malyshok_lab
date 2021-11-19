@@ -1,5 +1,8 @@
 #pragma once
+#include <string>
 #include <iostream>
+#include <conio.h>
+
 using namespace std;
 template <typename T>
 T GetCorrectNumber2(T min)
@@ -26,3 +29,4 @@ T GetCorrectNumber1(T min, T max)
     }
     return x;
 }
+
