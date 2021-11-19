@@ -155,22 +155,13 @@ vector<int> search_filter(const unordered_map<int, T>& map, Filter<T, T_param> f
 template <typename T>
 bool search_name(const T& map, string name)
 {
-    /*int i = 0;
-    for (auto& s : t) {
-        if (s.second.name == name)
-            return s.first;
-    }*/
+
     return map.getName() == name;
 }
 
 bool search_repair(const Pipe& pipes, const bool& r)
 {
-    //int i = 0;
-    //vector<int> index;
-    //for (auto& p : pipes) {
-    //    if (p.second.in_process == r)
-    //        index.emplace_back(p.first);
-    //}
+
     return pipes.getProc() == r;
 }
 
@@ -187,13 +178,7 @@ vector<int> search_repair(const unordered_map <int, Pipe>& pipes, const bool& r)
 
 bool search_ratio(const Station& stations, double per)
 {
-    /*int i = 0;
-    vector<int> index;
-    for (auto& s : stations) {*/
     return (round(((double(stations.getNum()) - double(stations.getNumP()) / double(stations.getNum()) * 100) == per)));
-    /*         index.emplace_back(s.first);
-     }
-     return index;*/
 }
 void print_menu()
 {
@@ -416,7 +401,7 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                     for (auto& id : index) {
                         cout << stations[id];
                         cout << "1. Edit found stations" << endl << "0. Exit" << endl;
-                        if (GetCorrectNumber2(0) == 1) {
+                        if (GetCorrectNumber1(0, 1) == 1) {
                             for (auto& id : index) {
                                 stations[id].edit();
                                 cout << stations[id];
