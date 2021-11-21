@@ -284,17 +284,30 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
                 for (auto& id : index) {
                     cout << pipes[id];
                 }
-                cout << "1. Edit found pipes" << endl << "0. Exit" << endl;
-                if (GetCorrectNumber2(0) == 1) {
+                cout << "1. Edit found pipes" << endl << "2. Delete found pipes" << endl << "0. Exit" << endl;
+                switch (GetCorrectNumber1(0, 2)) {
+                case 1: {
                     for (auto& id : index) {
                         pipes[id].edit();
                         cout << pipes[id];
                     }
+                    break;
                 }
-                else break;
+                case 2: {
+                    for (auto& id : index) {
+                        del_object(pipes, id);
+                    }
+                    cout << "Objects were deleted" << endl;
+                    break;
+                }
+                case 0:
+                    return;
+                default:
+                    cout << "Wrong action" << endl;
+                    break;
+                }
             }
-            else
-                cout << "No pipes " << endl;
+            else cout << "No pipes" << endl;
             break;
         }
         case 2: {
@@ -312,14 +325,28 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
                     for (auto& id : index) {
                         cout << pipes[id];
                     }
-                    cout << "1. Edit found pipes" << endl << "0. Exit" << endl;
-                    if (GetCorrectNumber1(0, 1) == 1) {
-                        for (auto& id : index) {
-                            pipes[id].edit();
-                            cout << pipes[id];
+                    cout << "1. Edit found pipes" << endl << "2. Delete found pipes" << endl << "0. Exit" << endl;
+                    switch (GetCorrectNumber1(0, 2)) {
+                    case 1: {
+                            for (auto& id : index) {
+                                pipes[id].edit();
+                                cout << pipes[id];
+                            }
+                            break;
                         }
+                    case 2:{
+                            for (auto& id : index) {
+                                del_object(pipes, id);
+                            }
+                            cout << "Objects were deleted" << endl;
+                            break;
+                        }
+                    case 0:
+                        return;
+                    default:
+                        cout << "Wrong action" << endl;
+                        break;
                     }
-                    else break;
                 }
                 else cout << "No pipes" << endl;
             }
@@ -376,19 +403,31 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                 for (auto& id : index) {
                     cout << stations[id];
                 }
-                    cout << "1. Edit found stations" << endl << "0. Exit" << endl;
-                    if (GetCorrectNumber1(0, 1) == 1) {
-                        for (auto& id : index) {
-                            cout << stations[id];
-                            stations[id].edit();
-                            cout << stations[id] << endl;
-                        }
+                cout << "1. Edit found stations" << endl << "2. Delete found stations" << endl << "0. Exit" << endl;
+                switch (GetCorrectNumber1(0, 2)) {
+                case 1: {
+                    for (auto& id : index) {
+                        cout << stations[id];
+                        stations[id].edit();
+                        cout << stations[id] << endl;
                     }
-                    else break;
-                
+                    break;
+                }
+                case 2: {
+                    for (auto& id : index) {
+                        del_object(stations, id);
+                    }
+                    cout << "Objects were deleted" << endl;
+                    break;
+                }
+                case 0:
+                    return;
+                default:
+                    cout << "Wrong action" << endl;
+                    break;
+                }
             }
-            else
-                cout << "No stations " << endl;
+            else cout << "No stations" << endl;
             break;
         }
         case 2: {
@@ -400,14 +439,29 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                     cout << "Found " << index.size() << " stations" << endl;
                     for (auto& id : index) {
                         cout << stations[id];
-                        cout << "1. Edit found stations" << endl << "0. Exit" << endl;
-                        if (GetCorrectNumber1(0, 1) == 1) {
-                            for (auto& id : index) {
-                                stations[id].edit();
-                                cout << stations[id];
-                            }
+                    }
+                    cout << "1. Edit found stations" << endl << "2. Delete found stations" << endl << "0. Exit" << endl;
+                    switch (GetCorrectNumber1(0, 2)) {
+                    case 1: {
+                        for (auto& id : index) {
+                            cout << stations[id];
+                            stations[id].edit();
+                            cout << stations[id] << endl;
                         }
-                        else break;
+                        break;
+                    }
+                    case 2: {
+                        for (auto& id : index) {
+                            del_object(stations, id);
+                        }
+                        cout << "Objects were deleted" << endl;
+                        break;
+                    }
+                    case 0:
+                        return;
+                    default:
+                        cout << "Wrong action" << endl;
+                        break;
                     }
                 }
                 else
