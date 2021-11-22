@@ -10,6 +10,10 @@ int Station::MaxID = 0;
 Station::Station()
 {
     id = ++MaxID;
+    name = "";
+    num = 0;
+    num_process = 0;
+    eff = 0;
 }
 ostream& operator << (ostream& out, const Station& s)
 {
@@ -41,11 +45,11 @@ istream& operator >> (istream& in, Station& s)
     cin.ignore(10000, '\n');
     getline(in, s.name);
     cout << "Enter the number of factories: ";
-    s.num = GetCorrectNumber2(0);
+    s.num = GetCorrectNumber(0);
     cout << "Enter the number of factories in process: ";
-    s.num_process = GetCorrectNumber1(0, s.num);
+    s.num_process = GetCorrectNumber(0, s.num);
     cout << "Enter the efficiency: ";
-    s.eff = GetCorrectNumber1(0, 100);
+    s.eff = GetCorrectNumber(0, 100);
     return in;
 }
 void Station::edit()
@@ -59,23 +63,21 @@ void Station::edit()
         } while (variant != '0' && variant != '1');
         if (variant == '1') {
             cout << "Enter how many factories were added to work " << endl;
-            n = GetCorrectNumber1(0, (num - num_process));
-            num_process = num_process + n;
+            n = GetCorrectNumber(0, (num - num_process));
+            num_process += n;
         }
         else {
             cout << "Enter how many factories were excluded from work " << endl;
-            n = GetCorrectNumber1(0, num_process);
-            num_process = num_process - n;
+            n = GetCorrectNumber(0, num_process);
+            num_process -= n;
         }
 }
 std::ifstream& operator>>(std::ifstream& fin, Station& s)
 {
-    string str;
     if (fin.is_open()) {
         fin >> s.id;
-        getline(fin, str);
-        getline(fin, str);
-        s.name = str;
+        fin >> ws;
+        getline(fin, s.name);
         fin >> s.num;
         fin >> s.num_process;
         fin >> s.eff;

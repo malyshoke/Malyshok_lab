@@ -5,20 +5,20 @@
 
 using namespace std;
 template <typename T>
-T GetCorrectNumber2(T min)
+T GetCorrectNumber(T min)
 {
     T x;
     while ((cin >> x).fail() || x < min)
     {
         cin.clear();
         cin.ignore(10000, '\n');
-        cout << "Type number (0...): ";
+        cout << "Type number greater than: " << min;
     }
     return x;
 }
 
 template <typename T>
-T GetCorrectNumber1(T min, T max)
+T GetCorrectNumber(T min, T max)
 {
     T x;
     while ((cin >> x).fail() || x < min || x > max)

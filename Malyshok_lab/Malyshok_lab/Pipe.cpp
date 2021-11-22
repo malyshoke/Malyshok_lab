@@ -19,6 +19,10 @@ void pipe_processs(const Pipe& pipe)
 Pipe::Pipe()
 {
     id = ++MaxID;
+    name = "";
+    length = 0;
+    diameter = 0;
+    in_process = 0;
 }
 
 void Pipe::edit()
@@ -56,9 +60,9 @@ istream& operator >> (istream& in, Pipe& p)
     cin.ignore(10000, '\n');
     getline(in, p.name);
     cout << "Enter the length: ";
-    p.length = GetCorrectNumber2(0.);
+    p.length = GetCorrectNumber(0.);
     cout << "Enter the diameter: ";
-    p.diameter = GetCorrectNumber2(0.);
+    p.diameter = GetCorrectNumber(0.);
     cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
     do {
         variant = _getch();

@@ -15,7 +15,9 @@ public:
     Pipe();
     double getLen() const { return length; }
     double getDia()const { return diameter; }
+    static void setMaxID(const int id) { MaxID = id;}
     bool getProc() const { return in_process; }
+    static int getMaxID() { return MaxID; }
     std::string getName() const { return name; }
     int getId() { return id; }
     void edit();

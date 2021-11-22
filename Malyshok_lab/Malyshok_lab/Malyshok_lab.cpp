@@ -12,7 +12,7 @@
 using namespace std;
 
 template <typename T>
-T GetCorrectNumber1(T min, T max)
+T GetCorrectNumber(T min, T max)
 {
     T x;
     while ((cin >> x).fail() || x < min || x > max)
@@ -33,7 +33,7 @@ int SearchId(const T& map, int id)
 }
 
 template <typename T>
-T GetCorrectNumber2(T min)
+T GetCorrectNumber(T min)
 {
 T x;
 while ((cin >> x).fail() || x < min)
@@ -53,78 +53,29 @@ void pipe_process(const Pipe& pipe)
         cout << "Pipe is not in process" << endl;
 }
 
-//Pipe input_pipe()
-//{
-//    char variant;
-//    Pipe pipe;
-//    cout << "Please, enter the information about pipe " << endl;
-//    cout << "Enter the name: ";
-//    cin.ignore(10000, '\n');
-//    getline(cin, pipe.getName);
-//    cout << "Enter the length: ";
-//    pipe.length = GetCorrectNumber2(0.);
-//    cout << "Enter the diameter: ";
-//    pipe.diameter = GetCorrectNumber2(0.);
-//    cout << "Enter 1 if pipe in process or 0 if pipe is not in process" << endl;
-//    do {
-//        variant = _getch();
-//        if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-//    } while (variant != '0' && variant != '1');
-//    pipe.in_process = variant == '1';
-//    pipe_process(pipe);
-//    return pipe;
-//}
-
-//Pipe load_pipe(ifstream& fin)
-//{
-//
-//    if (fin.is_open()) {
-//        Pipe pipe;
-//        string s;
-//        fin >> pipe.id;
-//        fin >> pipe.name;
-//        fin >> pipe.length;
-//        fin >> pipe.diameter;
-//        fin >> pipe.in_process;
-//        return pipe;
-//    }
-//    return {};
-//}
-
 
 void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& stations, ifstream& fin)
 {
-    int pipecount, stationcount;
+    int pipecount, stationcount, MaxPipeId, MaxStationId;
     string str;
     fin >> pipecount;
+    fin >> MaxPipeId;
     fin >> stationcount;
-    if (pipecount != 0) {
-        for (int i = 0; i < pipecount; ++i) {
-            Pipe mypipe;
-            fin >> mypipe;
-            pipes.insert({ mypipe.getId(), mypipe });
+    fin >> MaxStationId;
+    for (int i = 0; i < pipecount; ++i) {
+        Pipe mypipe;
+        fin >> mypipe;
+        pipes.insert({ mypipe.getId(), mypipe });
 
-        }
     }
-    if (stationcount != 0) {
-        for (int i = 0; i < stationcount; ++i) {
-            Station mystation;
-            fin >> mystation;
-            stations.insert({ mystation.getId(), mystation });
-        }
+    for (int i = 0; i < stationcount; ++i) {
+        Station mystation;
+        fin >> mystation;
+        stations.insert({ mystation.getId(), mystation });
     }
+    Pipe::setMaxID(MaxPipeId);
+    Station::setMaxID(MaxStationId);
 }
-
-
-//void print_pipe(const pair <int, Pipe>& pipe)
-//{
-//    cout << "\tId: " << pipe.first
-//        << "\tName: " << pipe.second.name 
-//        << "\tLength: " << pipe.second.length
-//        << "\tDiameter: " << pipe.second.diameter << endl;
-//    pipe_process(pipe.second);
-//    cout << endl;
-//}
 
 
 void print_pipes(const unordered_map <int, Pipe>& pipes)
@@ -198,10 +149,9 @@ void print_menu()
 
 int edit_pipes(unordered_map <int, Pipe>& pipes)
 {
-    int id; 
     cout << endl << "Type id: ";
     while (true) {
-        int id = GetCorrectNumber2(0);
+        int id = GetCorrectNumber(0);
         if (SearchId(pipes, id) != -1) {
             pipes[id].edit();
             cout << "Object was edited" << endl;
@@ -214,10 +164,9 @@ int edit_pipes(unordered_map <int, Pipe>& pipes)
 
 int edit_stations(unordered_map <int, Station>& stations)
 {
-    int id;
     cout << endl << "Type id: ";
     while (true) {
-        int id = GetCorrectNumber2(0);
+        int id = GetCorrectNumber(0);
         if (SearchId(stations, id) != -1) {
             stations[id].edit();
             cout << "Object was edited" << endl;
@@ -240,7 +189,7 @@ void del(T& map)
 {
     cout << endl << "Type id: ";
     while (true) {
-        int id = GetCorrectNumber2(0);
+        int id = GetCorrectNumber(0);
         if (SearchId(map, id) != -1) {
             del_object(map, id);
             cout << "Object was deleted" << endl;
@@ -272,7 +221,7 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
         cout << endl << "Pipe editing" << endl << "1. Search for pipes by name" << endl
             << "2. Search for pipes on the basis of repair" << endl << "3. Search for pipes by id " << endl << "0. Exit "
             << endl;
-        switch (GetCorrectNumber1(0, 3)) {
+        switch (GetCorrectNumber(0, 3)) {
         case 1: {
             cout << "Type name of pipe: ";
             string name = "";
@@ -285,7 +234,7 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
                     cout << pipes[id];
                 }
                 cout << "1. Edit found pipes" << endl << "2. Delete found pipes" << endl << "0. Exit" << endl;
-                switch (GetCorrectNumber1(0, 2)) {
+                switch (GetCorrectNumber(0, 2)) {
                 case 1: {
                     for (auto& id : index) {
                         pipes[id].edit();
@@ -326,7 +275,7 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
                         cout << pipes[id];
                     }
                     cout << "1. Edit found pipes" << endl << "2. Delete found pipes" << endl << "0. Exit" << endl;
-                    switch (GetCorrectNumber1(0, 2)) {
+                    switch (GetCorrectNumber(0, 2)) {
                     case 1: {
                             for (auto& id : index) {
                                 pipes[id].edit();
@@ -359,7 +308,7 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
             int variant;
             vector<int> edit_id;
             do {
-                variant = GetCorrectNumber2(0);
+                variant = GetCorrectNumber(0);
                 if (SearchId(pipes, variant) != -1)
                     edit_id.emplace_back(variant);
             } while (variant != 0);
@@ -390,7 +339,7 @@ void print_sfilters(unordered_map<int, Station>& stations) {
     while (true) {
         cout << endl << "Stations editing" << endl << "1. Search for stations by name" << endl
             << "2. Search for stations by ratio" << endl << "3. Search for stations by id " << endl <<"0. Exit" << endl;
-        int FilterCase = GetCorrectNumber1(0, 3);
+        int FilterCase = GetCorrectNumber(0, 3);
         switch (FilterCase) {
         case 1: {
             cout << "Type name of station: " << endl;
@@ -404,7 +353,7 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                     cout << stations[id];
                 }
                 cout << "1. Edit found stations" << endl << "2. Delete found stations" << endl << "0. Exit" << endl;
-                switch (GetCorrectNumber1(0, 2)) {
+                switch (GetCorrectNumber(0, 2)) {
                 case 1: {
                     for (auto& id : index) {
                         cout << stations[id];
@@ -432,7 +381,7 @@ void print_sfilters(unordered_map<int, Station>& stations) {
         }
         case 2: {
             cout << "Type percentage of factories is not in process: " << endl;
-            double percent = GetCorrectNumber2(0);
+            double percent = GetCorrectNumber(0);
             if (percent <= 100 && percent >= 0) {
                 vector<int> index = search_filter(stations, search_ratio, percent);
                 if (index.size() != 0) {
@@ -441,7 +390,7 @@ void print_sfilters(unordered_map<int, Station>& stations) {
                         cout << stations[id];
                     }
                     cout << "1. Edit found stations" << endl << "2. Delete found stations" << endl << "0. Exit" << endl;
-                    switch (GetCorrectNumber1(0, 2)) {
+                    switch (GetCorrectNumber(0, 2)) {
                     case 1: {
                         for (auto& id : index) {
                             cout << stations[id];
@@ -476,7 +425,7 @@ void print_sfilters(unordered_map<int, Station>& stations) {
             int variant;
             vector<int> edit_id;
             do {
-                variant = GetCorrectNumber2(0);
+                variant = GetCorrectNumber(0);
                 if (SearchId(stations, variant) != -1)
                     edit_id.emplace_back(variant);
             } while (variant != 0);
@@ -504,7 +453,7 @@ void batch_editing(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>&
     while (true) {
         cout << endl << "Filters menu" << endl << "1. Pipes " << endl << "2. Stations " << endl
             << "0. Exit " << endl;
-        int edit_case = GetCorrectNumber2(0);
+        int edit_case = GetCorrectNumber(0);
         switch (edit_case) {
         case 1: {
 
@@ -532,7 +481,7 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber1(0,11))
+    switch (GetCorrectNumber(0,11))
     {
     case 1:
     {   Pipe pipe;
@@ -627,11 +576,11 @@ int main()
             cout << "Unable to open file" << endl;
         else {
             if (pipes.size() != 0)
-                fout << pipes.size() << endl;
-            else fout << 0 << endl;
+                fout << pipes.size() << endl << Pipe::getMaxID() << endl;
+            else fout << 0 << endl << 0 << endl;
             if (stations.size() != 0)
-                fout << stations.size() << endl;
-            else fout << 0 << endl;
+                fout << stations.size() << endl << Station::getMaxID() << endl;
+            else fout << 0 << endl << 0 << endl;
             if (pipes.size() != 0)
                 save_pipes(pipes, fout);
             if (stations.size() != 0)
