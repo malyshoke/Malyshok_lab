@@ -20,7 +20,13 @@ public:
     static int getMaxID() { return MaxID; }
     std::string getName() const { return name; }
     int getId() { return id; }
+    int in, out;
+    void link(int myin, int myout);
+    void untie();
     void edit();
+    bool linked() const;
+    bool CanBeUsed() const;
+    void showLink(int id);
     friend std::ostream& operator << (std::ostream& out, const Pipe& p);
     friend std::ofstream& operator << (std::ofstream& fout, const Pipe& p);
     friend std::istream& operator >> (std::istream& in, Pipe& p);

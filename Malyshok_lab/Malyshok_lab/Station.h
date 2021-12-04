@@ -13,7 +13,7 @@ class Station
     static int MaxID;
 
 public:
-
+    bool connection;
     std::string getName() const { return name; }
     int getNum() const { return num; }
     static int getMaxID()  { return MaxID; }
@@ -22,6 +22,9 @@ public:
     int getId() { return id; }
     Station();
     void edit();
+    void untie();
+    void link();
+    bool linked();
     friend std::ostream& operator << (std::ostream& out, const Station& s);
     friend std::ofstream& operator << (std::ofstream& fout, const Station& s);
     friend std::istream& operator >> (std::istream& in, Station& s);

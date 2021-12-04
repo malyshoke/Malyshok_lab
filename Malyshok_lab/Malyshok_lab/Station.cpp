@@ -14,6 +14,7 @@ Station::Station()
     num = 0;
     num_process = 0;
     eff = 0;
+    connection = false;
 }
 ostream& operator << (ostream& out, const Station& s)
 {
@@ -71,6 +72,18 @@ void Station::edit()
             n = GetCorrectNumber(0, num_process);
             num_process -= n;
         }
+}
+void Station::untie()
+{
+    connection = false;
+}
+void Station::link()
+{
+    if (!connection) connection = true;
+}
+bool Station::linked()
+{
+    return connection;
 }
 std::ifstream& operator>>(std::ifstream& fin, Station& s)
 {

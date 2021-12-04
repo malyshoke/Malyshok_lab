@@ -23,8 +23,37 @@ Pipe::Pipe()
     length = 0;
     diameter = 0;
     in_process = 0;
+    in = -1;
+    out = -1;
 }
 
+void Pipe::link(int myin, int myout)
+{
+        if (in == -1 && out == -1 && myin != myout) {
+            out = myout;
+            in = myin;
+        }
+        else
+            cout << "Wrong action" << endl;
+}
+
+void Pipe::untie()
+{
+    in = -1;
+    out = -1;
+}
+
+bool Pipe::linked() const {
+    return in > 0 && out > 0;
+}
+
+bool Pipe::CanBeUsed() const {
+    return in > 0 && out > 0 && in_process == false;
+}
+void Pipe::showLink(int id)
+{
+    cout << "Station " << out << " -> pipe " << id << " -> station " << in << ((in_process == true) ? " In repair " : " In Process ") << endl;
+}
 void Pipe::edit()
 {
     in_process =! in_process;
