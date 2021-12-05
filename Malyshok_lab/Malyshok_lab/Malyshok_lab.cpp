@@ -6,6 +6,7 @@
 #include "Pipe.h"
 #include "Station.h"
 #include <fstream>
+#include <set>
 #include <vector>
 #include <unordered_map>
 
@@ -144,6 +145,7 @@ void print_menu()
         << "8. Batch editing" << endl
         << "9. Save" << endl
         << "10. Load " << endl
+        << "11. Communication work " << endl
         << "0. Exit" << endl;
 }
 
@@ -467,12 +469,87 @@ void batch_editing(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>&
         case 0:
             return;
         default: {
-            cout << "Wrong actions" << endl;
+            cout << "Wrong action" << endl;
             break;
         }
         }
     }
 }
+
+void show_connection(const unordered_map<int, Pipe>& pipes) 
+{
+    for (auto& [id, p] : pipes)
+        if (p.linked())
+            p.showLink(id);
+}
+
+void add_branch(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
+    cout << "Enter id of pipes you want to link " << endl;
+    int pipeId = SearchId(pipes, GetCorrectNumber(0));
+    cout << "Enter the id of station where the pipe enters: " << endl;
+    int in = SearchId(stations, GetCorrectNumber(0));
+    cout << "Enter the id of station where the pipe comes out: " << endl;
+    int out = SearchId(stations, GetCorrectNumber(0));
+    if (pipeId != -1 && pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != -1 && in != -1 && out != in) {
+        pipes[pipeId].link(in, out);
+        stations[in].link();
+        stations[out].link();
+    }
+    else
+        cout << "Wrong action" << endl;
+}
+
+vector<vector<int>> add_graph(const unordered_map<int, Pipe>& pipes, const unordered_map<int, Station>& stations) {
+    set<int> vertices;
+    for (const auto& [i, p] : pipes)
+        if (p.CanBeUsed() && stations.count(p.in) && stations.count(p.out))
+        {
+            vertices.insert(p.out);
+            vertices.insert(p.in);
+        }
+    unordered_map<int, int> VerticesIndex;
+    int i = 0;
+    for (const int& v : vertices)
+        VerticesIndex.insert({ v, i++ });
+    vector<vector<int>> r;
+    r.resize(vertices.size());
+    for (const auto& [i, p] : pipes)
+        if (p.CanBeUsed())
+            r[VerticesIndex[p.out]].push_back(VerticesIndex[p.in]);
+    return r;
+}
+
+void connection_work(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
+    while (true) {
+        cout << endl << "Connection menu" << endl << "1. Connect pipe " << endl << "2. Show links " << endl
+            << "0. Exit " << endl;
+        int edit_case = GetCorrectNumber(0, 3);
+        switch (edit_case) {
+        case 1: {
+
+            if (pipes.size() > 0 && stations.size() > 1)
+                add_branch(pipes, stations);
+            else
+                cout << "No objects " << endl;
+            break;
+        }
+        case 2: {
+            if (pipes.size() > 0 && stations.size() > 1)
+                show_connection(pipes);
+            else
+                cout << "No objects " << endl;
+            break;
+        }
+        case 0:
+            return;
+        default: {
+            cout << "Wrong action" << endl;
+            break;
+        }
+        }
+    }
+}
+
 
 int main()
 {
@@ -481,7 +558,7 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber(0,11))
+    switch (GetCorrectNumber(0,12))
     {
     case 1:
     {   Pipe pipe;
@@ -621,7 +698,13 @@ int main()
         
         break;
     }
-    
+    case 11:
+    {
+        connection_work(pipes, stations);
+        show_connection(pipes);
+        
+        break;
+    }
     case 0:
     {
         return 0;

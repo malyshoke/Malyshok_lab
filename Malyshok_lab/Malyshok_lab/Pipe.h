@@ -26,7 +26,7 @@ public:
     void edit();
     bool linked() const;
     bool CanBeUsed() const;
-    void showLink(int id);
+    void showLink(int id) const;
     friend std::ostream& operator << (std::ostream& out, const Pipe& p);
     friend std::ofstream& operator << (std::ofstream& fout, const Pipe& p);
     friend std::istream& operator >> (std::istream& in, Pipe& p);
