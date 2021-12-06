@@ -54,7 +54,7 @@ bool Pipe::CanBeUsed() const
 }
 void Pipe::showLink(int id) const
 {
-    cout << "Station " << out << " -> Pipe " << id << " -> Station " << in << endl << ((in_process == true) ? "Pipe is in repair " : "Pipe is in process ") << endl;
+    cout << "Station " << out << " to Pipe " << id << " to Station " << in << endl << ((in_process == true) ? "Pipe is in repair " : "Pipe is in process ") << endl;
 }
 void Pipe::edit()
 {

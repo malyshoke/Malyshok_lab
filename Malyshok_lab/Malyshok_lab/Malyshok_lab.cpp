@@ -481,16 +481,30 @@ void show_connection(const unordered_map<int, Pipe>& pipes)
     for (auto& [id, p] : pipes)
         if (p.linked())
             p.showLink(id);
+        else cout << "Pipe " << id << " has no connection" << endl;
+}
+
+template <typename T>
+int check_id(const T& map, int id)
+{
+
+    while (SearchId(map, id) == -1) 
+   {
+        cout << "No object with this id" << endl;
+        cout << "Try again" << endl;
+        id = GetCorrectNumber(0);
+    }
+    return id;
 }
 
 void add_branch(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
-    cout << "Enter id of pipes you want to link " << endl;
-    int pipeId = SearchId(pipes, GetCorrectNumber(0));
+    cout << "Enter id of pipes you want to link: " << endl;
+    int pipeId = check_id(pipes, GetCorrectNumber(0));
     cout << "Enter the id of station where the pipe enters: " << endl;
-    int in = SearchId(stations, GetCorrectNumber(0));
+    int in = check_id(stations, GetCorrectNumber(0));
     cout << "Enter the id of station where the pipe comes out: " << endl;
-    int out = SearchId(stations, GetCorrectNumber(0));
-    if (pipeId != -1 && pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != -1 && in != -1 && out != in) {
+    int out = check_id(stations, GetCorrectNumber(0));
+    if (pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != in) {
         pipes[pipeId].link(in, out);
         stations[in].link();
         stations[out].link();
@@ -499,25 +513,6 @@ void add_branch(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& st
         cout << "Wrong action" << endl;
 }
 
-vector<vector<int>> add_graph(const unordered_map<int, Pipe>& pipes, const unordered_map<int, Station>& stations) {
-    set<int> vertices;
-    for (const auto& [i, p] : pipes)
-        if (p.CanBeUsed() && stations.count(p.in) && stations.count(p.out))
-        {
-            vertices.insert(p.out);
-            vertices.insert(p.in);
-        }
-    unordered_map<int, int> VerticesIndex;
-    int i = 0;
-    for (const int& v : vertices)
-        VerticesIndex.insert({ v, i++ });
-    vector<vector<int>> r;
-    r.resize(vertices.size());
-    for (const auto& [i, p] : pipes)
-        if (p.CanBeUsed())
-            r[VerticesIndex[p.out]].push_back(VerticesIndex[p.in]);
-    return r;
-}
 
 void connection_work(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
     while (true) {
