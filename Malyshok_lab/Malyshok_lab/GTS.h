@@ -14,8 +14,12 @@ class GTS
 	std::vector<std::vector<int>> ribs;
 	std::unordered_map<int, Pipe> pipes;
 	std::unordered_map<int, Station> stations;
+	std::vector<std::vector<int>> AddGraph();
+	std::unordered_map<int, int> GetIndexVertices();
+	std::unordered_map<int, int> GetIndexVerticesBack();
+	void TopologicalSort(const std::unordered_map<int, int>&);
+
 public:
-	std::unordered_map<int, int> GetVerticesIndex();
 	void AddPipe();
 	void AddStation();
 	void EditStation();
@@ -23,6 +27,9 @@ public:
 	void ShowInfo();
 	void DeletePipe();
 	void DeleteStation();
-	void TopologicalSort(const std::unordered_map<int, int>&);
+	void SaveInfo();
+	void LoadInfo();
+	void ConnectionWork();
+	void DoSort();
 };
 

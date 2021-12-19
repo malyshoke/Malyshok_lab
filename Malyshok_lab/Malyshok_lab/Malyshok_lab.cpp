@@ -117,34 +117,6 @@ void print_menu()
         << "0. Exit" << endl;
 }
 
-int edit_pipes(unordered_map <int, Pipe>& pipes)
-{
-    cout << endl << "Type id: ";
-    while (true) {
-        int id = GetCorrectNumber(0);
-        if (SearchId(pipes, id) != -1) {
-            pipes[id].edit();
-            cout << "Object was edited" << endl;
-            return id;
-        }
-        else cout << "No object with this id" << endl;
-    }
-}
-
-
-int edit_stations(unordered_map <int, Station>& stations)
-{
-    cout << endl << "Type id: ";
-    while (true) {
-        int id = GetCorrectNumber(0);
-        if (SearchId(stations, id) != -1) {
-            stations[id].edit();
-            cout << "Object was edited" << endl;
-            return id;
-        }
-        else cout << "No object with this id" << endl;
-    }
-}
 
 //template <typename T>
 //void del_object(T& map, int id)
@@ -170,17 +142,6 @@ int edit_stations(unordered_map <int, Station>& stations)
 //}
 
 
-void save_pipes(const unordered_map <int, Pipe>& pipes, ofstream& fout)
-{
-    for  (auto& p : pipes)
-        fout << p.second;
-}
-
-void save_stations(const unordered_map <int, Station>& stations, ofstream& fout)
-{
-     for (auto& s : stations)
-        fout << s.second;
-}
 
 void print_pfilters(unordered_map<int, Pipe>& pipes) {
     if (pipes.size() == 0) {
@@ -456,18 +417,6 @@ void show_connection(const unordered_map<int, Pipe>& pipes, unordered_map<int, S
     else cout << "No connection " << endl;
 }
 
-template <typename T>
-int check_id(const T& map, int id)
-{
-
-    while (SearchId(map, id) == -1) 
-   {
-        cout << "No object with this id" << endl;
-        cout << "Try again" << endl;
-        id = GetCorrectNumber(0);
-    }
-    return id;
-}
 
 void add_branch(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
     cout << "Enter id of pipe you want to link: " << endl;
@@ -590,18 +539,7 @@ int main()
     }
     case 5:
     {
-        cout << "Information about pipes:" << endl;
-        if (pipes.size() == 0) {
-            cout << "No pipes" << endl;
-        }
-        else
-        print_pipes(pipes);
-        cout << "Information about stations:" << endl;
-        if (stations.size() == 0) {
-            cout << "No stations" << endl;
-        }
-        else
-            print_stations(stations);
+        gts.ShowInfo();
         break;
     }
 
@@ -625,83 +563,23 @@ int main()
     }
     case 9:
     {
-        string name = "";
-        cout << "Type name of file: ";
-        cin.ignore(10000, '\n');
-        getline(cin, name);
-        name = name + ".txt";
-        ofstream fout;
-        fout.open(name, ios::out);
-        if (!fout.is_open())
-            cout << "Unable to open file" << endl;
-        else {
-            if (pipes.size() != 0)
-                fout << pipes.size() << endl << Pipe::getMaxID() << endl;
-            else fout << 0 << endl << 0 << endl;
-            if (stations.size() != 0)
-                fout << stations.size() << endl << Station::getMaxID() << endl;
-            else fout << 0 << endl << 0 << endl;
-            if (pipes.size() != 0)
-                save_pipes(pipes, fout);
-            if (stations.size() != 0)
-                save_stations(stations, fout);
-        }
-        fout.close();
+        gts.SaveInfo();
         break;
     }
        
     case 10:
     {
-        string name = " ";
-        cout << "Type name of file: ";
-        cin.ignore(10000, '\n');
-        getline(cin, name);
-        name = name + ".txt";
-        ifstream fin;
-        fin.open(name, ios::in);
-        if (!fin.is_open())
-            cout << "Unable to open file" << endl;
-        else {
-            load_all(pipes, stations, fin);
-            cout << "Information about pipes:" << endl;
-            if (pipes.size() == 0) {
-                cout << "No pipes" << endl;
-            }
-            else
-                print_pipes(pipes);
-            cout << "Information about stations:" << endl;
-            if (stations.size() == 0) {
-                cout << "No stations" << endl;
-            }
-            else
-                print_stations(stations);
-            
-        }
-        fin.close();
-        
+        gts.LoadInfo();
         break;
     }
     case 11:
     {
-        connection_work(pipes, stations);
+        gts.ConnectionWork();
         break;
     }
     case 12:
     {
-        vector<vector<int>> r = CreateGraph(pipes, stations);
-        //GTS gts(r);
-        set<int> vertices;
-        for (const auto& [i, p] : pipes)
-            if (p.CanBeUsed() && stations.count(p.in) && stations.count(p.out))
-            {
-                vertices.insert(p.out);
-                vertices.insert(p.in);
-            }
-        unordered_map<int, int> VerticesIndex;
-        int i = 0;
-        for (const int& v : vertices)
-            VerticesIndex.insert({ i++, v });
-        gts.TopologicalSort(VerticesIndex);
+        gts.DoSort();
         break;
     }
     case 0:

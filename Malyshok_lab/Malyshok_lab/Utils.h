@@ -60,3 +60,16 @@ void del_object(T& map, int id)
         map.erase(id);
     }
 }
+
+template <typename T>
+int check_id(const T& map, int id)
+{
+
+    while (SearchId(map, id) == -1)
+    {
+        cout << "No object with this id" << endl;
+        cout << "Try again" << endl;
+        id = GetCorrectNumber(0);
+    }
+    return id;
+}
