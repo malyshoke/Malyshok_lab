@@ -37,3 +37,26 @@ int SearchId(const T& map, int id)
     return -1;
 
 }
+
+template <typename T>
+void del(T& map)
+{
+    cout << endl << "Type id: ";
+    while (true) {
+        int id = GetCorrectNumber(0);
+        if (SearchId(map, id) != -1) {
+            del_object(map, id);
+            cout << "Object was deleted" << endl;
+            return;
+        }
+        else cout << "No object with this id" << endl;
+    }
+}
+
+template <typename T>
+void del_object(T& map, int id)
+{
+    if (map.find(id) != map.end()) {
+        map.erase(id);
+    }
+}

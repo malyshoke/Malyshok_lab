@@ -93,6 +93,26 @@ void GTS::EditStation()
             PrintStations(stations);
     }
 
+    void GTS::DeletePipe()
+    {
+        if (pipes.size() == 0)
+            cout << "No pipes to delete" << endl;
+        else {
+            PrintPipes(pipes);
+            del(pipes);
+        }
+    }
+
+    void GTS::DeleteStation()
+    {
+        if (stations.size() == 0)
+            cout << "No stations to delete" << endl;
+        else {
+            PrintStations(stations);
+            del(stations);
+        }
+    }
+
 
 unordered_map<int, int> GTS::GetVerticesIndex()
 {

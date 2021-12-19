@@ -146,28 +146,28 @@ int edit_stations(unordered_map <int, Station>& stations)
     }
 }
 
-template <typename T>
-void del_object(T& map, int id)
-{
-    if (map.find(id) != map.end()) {
-        map.erase(id);
-    }
-}
-
-template <typename T>
-void del(T& map)
-{
-    cout << endl << "Type id: ";
-    while (true) {
-        int id = GetCorrectNumber(0);
-        if (SearchId(map, id) != -1) {
-            del_object(map, id);
-            cout << "Object was deleted" << endl;
-            return;
-        }
-        else cout << "No object with this id" << endl;
-    }
-}
+//template <typename T>
+//void del_object(T& map, int id)
+//{
+//    if (map.find(id) != map.end()) {
+//        map.erase(id);
+//    }
+//}
+//
+//template <typename T>
+//void del(T& map)
+//{
+//    cout << endl << "Type id: ";
+//    while (true) {
+//        int id = GetCorrectNumber(0);
+//        if (SearchId(map, id) != -1) {
+//            del_object(map, id);
+//            cout << "Object was deleted" << endl;
+//            return;
+//        }
+//        else cout << "No object with this id" << endl;
+//    }
+//}
 
 
 void save_pipes(const unordered_map <int, Pipe>& pipes, ofstream& fout)
@@ -578,24 +578,15 @@ int main()
 
     case 3:
 
-    {   if (pipes.size() == 0) 
-        cout << "No pipe to edit" << endl;
-    else {
-        int id = edit_pipes(pipes);
-        cout << pipes[id];
-    }
-    break;
+    {   
+        gts.EditPipe();
+        break;
     }
 
     case 4:
-    {   if (stations.size() == 0) {
-        cout << "No station to edit" << endl;
-    }
-    else {
-       int id = edit_stations(stations);
-       cout << stations[id];
-    }
-    break;
+    {
+        gts.EditStation();
+        break;
     }
     case 5:
     {
@@ -616,23 +607,13 @@ int main()
 
     case 6:
     {  
-        if (pipes.size() == 0)
-            cout << "No pipes to delete" << endl;
-        else {
-            print_pipes(pipes);
-            del(pipes);
-    }
+        gts.DeletePipe();
         break;
     }
 
     case 7:
     {
-        if (stations.size() == 0)
-            cout << "No stations to delete" << endl;
-        else {
-            print_stations(stations);
-            del(stations);
-        }
+        gts.DeleteStation();
         break;
     }
 

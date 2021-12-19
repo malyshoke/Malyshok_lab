@@ -21,6 +21,8 @@ public:
 	void EditStation();
 	void EditPipe();
 	void ShowInfo();
+	void DeletePipe();
+	void DeleteStation();
 	void TopologicalSort(const std::unordered_map<int, int>&);
 };
 
