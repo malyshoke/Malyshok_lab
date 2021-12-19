@@ -4,6 +4,7 @@
 #include "Pipe.h"
 #include "Station.h"
 #include "Utils.h"
+#include "Filters.h"
 #include <fstream>
 #include <set>
 #include <vector>
@@ -31,5 +32,6 @@ public:
 	void LoadInfo();
 	void ConnectionWork();
 	void DoSort();
+	void BatchEditing();
 };
 

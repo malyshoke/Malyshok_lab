@@ -1,7 +1,16 @@
 #include "pch.h"
 #include "GTS.h"
 using namespace std;
-//из main
+//from main
+
+void pipe_process(const Pipe& pipe)
+{
+    if (pipe.getProc())
+        cout << "Pipe is in process" << endl;
+    else
+        cout << "Pipe is not in process" << endl;
+}
+
 int EditPipes(unordered_map <int, Pipe>& pipes)
 {
     cout << endl << "Type id: ";
@@ -290,6 +299,32 @@ void GTS::EditStation()
         }
         else cout << "No connected objects" << endl;
 
+    }
+
+    void GTS::BatchEditing()
+    {
+        while (true) {
+            cout << endl << "Filters menu" << endl << "1. Pipes " << endl << "2. Stations " << endl
+                << "0. Exit " << endl;
+            int edit_case = GetCorrectNumber(0);
+            switch (edit_case) {
+            case 1: {
+
+                PrintPipesFilters(pipes);
+                return;
+            }
+            case 2: {
+                PrintStationsFilters(stations);
+                return;
+            }
+            case 0:
+                return;
+            default: {
+                cout << "Wrong action" << endl;
+                break;
+            }
+            }
+        }
     }
 
     vector<vector<int>> GTS::AddGraph()
