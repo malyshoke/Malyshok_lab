@@ -1,6 +1,99 @@
 #include "pch.h"
 #include "GTS.h"
 using namespace std;
+//из main
+int EditPipes(unordered_map <int, Pipe>& pipes)
+{
+    cout << endl << "Type id: ";
+    while (true) {
+        int id = GetCorrectNumber(0);
+        if (SearchId(pipes, id) != -1) {
+            pipes[id].edit();
+            cout << "Object was edited" << endl;
+            return id;
+        }
+        else cout << "No object with this id" << endl;
+    }
+}
+
+int EditStations(unordered_map <int, Station>& stations)
+{
+    cout << endl << "Type id: ";
+    while (true) {
+        int id = GetCorrectNumber(0);
+        if (SearchId(stations, id) != -1) {
+            stations[id].edit();
+            cout << "Object was edited" << endl;
+            return id;
+        }
+        else cout << "No object with this id" << endl;
+    }
+}
+
+void PrintPipes(const unordered_map<int, Pipe>& pipes)
+{
+    for (auto& [id, p] : pipes)
+        cout << p;
+}
+
+void PrintStations(const unordered_map<int, Station>& stations)
+{
+    for (const auto& [id, s] : stations)
+        cout << s;
+}
+
+void GTS::AddPipe()
+{
+    Pipe pipe;
+    cin >> pipe;
+    pipes.insert({ pipe.getId(),pipe });
+}
+
+void GTS::AddStation()
+{
+    Station station;
+    cin >> station;
+    stations.insert({ station.getId(),station });
+}
+
+void GTS::EditStation()
+{
+        if (stations.size() == 0) {
+            cout << "No station to edit" << endl;
+        }
+        else {
+            int id = EditStations(stations);
+            cout << stations[id];
+        }
+    }
+
+    void GTS::EditPipe()
+    {
+        if (pipes.size() == 0)
+            cout << "No pipe to edit" << endl;
+        else {
+            int id = EditPipes(pipes);
+            cout << pipes[id];
+        }
+    }
+
+    void GTS::ShowInfo()
+    {
+        cout << "Information about pipes:" << endl;
+        if (pipes.size() == 0) {
+            cout << "No pipes" << endl;
+        }
+        else
+            PrintPipes(pipes);
+        cout << "Information about stations:" << endl;
+        if (stations.size() == 0) {
+            cout << "No stations" << endl;
+        }
+        else
+            PrintStations(stations);
+    }
+
+
 unordered_map<int, int> GTS::GetVerticesIndex()
 {
     set<int> vertices;
@@ -16,10 +109,6 @@ unordered_map<int, int> GTS::GetVerticesIndex()
     return VerticesIndex;
 }
 
-GTS::GTS(const vector<vector<int>>& r)
-{
-    ribs = r;
-}
 
 void DepthFirstSearch(int v, vector<char>& cl, vector<int>& p, int& start, const vector<vector<int>>& ribs, vector<int>& result) 
 {

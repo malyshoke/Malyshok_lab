@@ -30,3 +30,10 @@ T GetCorrectNumber(T min, T max)
     return x;
 }
 
+template <typename T>
+int SearchId(const T& map, int id)
+{
+    if (map.find(id) != map.end()) return id;
+    return -1;
+
+}

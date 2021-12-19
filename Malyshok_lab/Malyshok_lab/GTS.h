@@ -3,6 +3,7 @@
 #include "Malyshok_lab.h"
 #include "Pipe.h"
 #include "Station.h"
+#include "Utils.h"
 #include <fstream>
 #include <set>
 #include <vector>
@@ -15,11 +16,11 @@ class GTS
 	std::unordered_map<int, Station> stations;
 public:
 	std::unordered_map<int, int> GetVerticesIndex();
-	GTS(const std::vector<std::vector<int>>& r);
+	void AddPipe();
+	void AddStation();
+	void EditStation();
+	void EditPipe();
+	void ShowInfo();
 	void TopologicalSort(const std::unordered_map<int, int>&);
-	void setPipes(std::unordered_map<int, Pipe> p) { pipes = p; }
-	void setStations(std::unordered_map<int, Station> s) { stations = s; }
-	void setRibs(std::vector<std::vector<int>> r) { ribs = r; }
-
 };
 

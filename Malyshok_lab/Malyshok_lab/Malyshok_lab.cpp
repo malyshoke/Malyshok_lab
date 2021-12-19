@@ -6,47 +6,13 @@
 #include "Pipe.h"
 #include "Station.h"
 #include "GTS.h"
+#include "Utils.h"
 #include <fstream>
 #include <set>
 #include <vector>
 #include <unordered_map>
 
 using namespace std;
-
-template <typename T>
-T GetCorrectNumber(T min, T max)
-{
-    T x;
-    while ((cin >> x).fail() || x < min || x > max)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Type number (" << min << "-" << max << "):";
-    }
-    return x;
-}
-
-template <typename T>
-int SearchId(const T& map, int id)
-{
-    if (map.find(id) != map.end()) return id;
-    return -1;
-
-}
-
-template <typename T>
-T GetCorrectNumber(T min)
-{
-T x;
-while ((cin >> x).fail() || x < min)
-{
-    cin.clear();
-    cin.ignore(10000, '\n');
-    cout << "Type number (0...): ";
-}
-return x;
-}
-
 void pipe_process(const Pipe& pipe)
 {
     if (pipe.getProc())
@@ -593,21 +559,20 @@ int main()
     vector<vector<int>> ribs;
     unordered_map<int, Pipe> pipes;
     unordered_map<int, Station> stations;
+    GTS gts;
     while (1)
     {
     print_menu();
     switch (GetCorrectNumber(0,13))
     {
     case 1:
-    {   Pipe pipe;
-        cin >> pipe;
-        pipes.insert({pipe.getId(),pipe});
+    {   
+        gts.AddPipe();
         break;
     }
     case 2:
-    {   Station station;
-        cin >> station;
-        stations.insert({station.getId(),station });
+    {   
+        gts.AddStation();
         break;
     }
 
@@ -743,7 +708,7 @@ int main()
     case 12:
     {
         vector<vector<int>> r = CreateGraph(pipes, stations);
-        GTS gts(r);
+        //GTS gts(r);
         set<int> vertices;
         for (const auto& [i, p] : pipes)
             if (p.CanBeUsed() && stations.count(p.in) && stations.count(p.out))
