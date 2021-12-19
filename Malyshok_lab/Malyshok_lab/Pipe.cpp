@@ -50,11 +50,11 @@ bool Pipe::linked() const
 
 bool Pipe::CanBeUsed() const 
 {
-    return in > 0 && out > 0 && in_process == false;
+    return in > 0 && out > 0 && in_process == true;
 }
 void Pipe::showLink(int id) const
 {
-    cout << " \t   " << id << "     \t\t" << in << "\t\t\t" << out <<"\t\t  " << ((in_process == true) ? "in repair " : "in process ") << endl;
+    cout << " \t   " << id << "     \t\t" << in << "\t\t\t" << out <<"\t\t  " << ((in_process == true) ? "in process " : "in repair ") << endl;
 }
 void Pipe::edit()
 {

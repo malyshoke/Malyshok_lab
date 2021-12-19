@@ -147,6 +147,7 @@ void print_menu()
         << "9. Save" << endl
         << "10. Load " << endl
         << "11. Communication work " << endl
+        << "12. Topological sort " << endl
         << "0. Exit" << endl;
 }
 
@@ -264,7 +265,7 @@ void print_pfilters(unordered_map<int, Pipe>& pipes) {
         }
         case 2: {
             char variant;
-            cout << "Enter 1 if you want to search pipe is under repair, 0 if is not under repair: " << endl;
+            cout << "Enter 1 if you want to search pipe is not under repair, 0 if is under repair: " << endl;
             do {
                 variant = _getch();
                 if (variant != '0' && variant != '1') cout << endl << "Enter the correct value" << endl;
@@ -532,8 +533,8 @@ void disconnect(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& st
 
 void connection_work(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
     while (true) {
-        cout << endl << "Connection menu" << endl << "1. Connect pipe " << endl << "2. Disconnect pipe " << endl <<  "3. Show links " << endl
-            << "0. Exit " << endl;
+        cout << endl << "Connection menu" << endl << "1. Connect pipe " << endl << "2. Disconnect pipe " << endl << "3. Show links " << endl
+           << "0. Exit " << endl;
         int input = GetCorrectNumber(0, 4);
         switch (input) {
         case 1: {
@@ -555,7 +556,7 @@ void connection_work(unordered_map<int, Pipe>& pipes, unordered_map<int, Station
         case 3: {
             show_connection(pipes, stations);
             break;
-        }
+        }        
         case 0: {
             return;
         }
@@ -567,15 +568,35 @@ void connection_work(unordered_map<int, Pipe>& pipes, unordered_map<int, Station
     }
 }
 
+vector<vector<int>> CreateGraph(const unordered_map<int, Pipe>& pipes, const unordered_map<int, Station>& stations) {
+    set<int> vertices;
+    for (const auto& [i, p] : pipes)
+        if (p.CanBeUsed() && stations.count(p.in) && stations.count(p.out))
+        {
+            vertices.insert(p.out);
+            vertices.insert(p.in);
+        }
+    unordered_map<int, int> VerticesIndex;
+    int i = 0;
+    for (const int& v : vertices)
+        VerticesIndex.insert({ v, i++ });
+    vector<vector<int>> r;
+    r.resize(vertices.size());
+    for (const auto& [i, p] : pipes)
+        if (p.CanBeUsed())
+            r[VerticesIndex[p.out]].push_back(VerticesIndex[p.in]);
+    return r;
+}
 
 int main()
 {
+    vector<vector<int>> ribs;
     unordered_map<int, Pipe> pipes;
     unordered_map<int, Station> stations;
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber(0,12))
+    switch (GetCorrectNumber(0,13))
     {
     case 1:
     {   Pipe pipe;
@@ -611,7 +632,6 @@ int main()
     }
     break;
     }
-
     case 5:
     {
         cout << "Information about pipes:" << endl;
@@ -717,9 +737,25 @@ int main()
     }
     case 11:
     {
-
         connection_work(pipes, stations);
-        
+        break;
+    }
+    case 12:
+    {
+        vector<vector<int>> r = CreateGraph(pipes, stations);
+        GTS gts(r);
+        set<int> vertices;
+        for (const auto& [i, p] : pipes)
+            if (p.CanBeUsed() && stations.count(p.in) && stations.count(p.out))
+            {
+                vertices.insert(p.out);
+                vertices.insert(p.in);
+            }
+        unordered_map<int, int> VerticesIndex;
+        int i = 0;
+        for (const int& v : vertices)
+            VerticesIndex.insert({ i++, v });
+        gts.TopologicalSort(VerticesIndex);
         break;
     }
     case 0:
