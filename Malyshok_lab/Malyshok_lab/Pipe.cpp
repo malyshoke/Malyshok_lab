@@ -54,7 +54,7 @@ bool Pipe::CanBeUsed() const
 }
 void Pipe::showLink(int id) const
 {
-    cout << "Station " << out << " to Pipe " << id << " to Station " << in << endl << ((in_process == true) ? "Pipe is in repair " : "Pipe is in process ") << endl;
+    cout << " \t   " << id << "     \t\t" << in << "\t\t\t" << out <<"\t\t  " << ((in_process == true) ? "in repair " : "in process ") << endl;
 }
 void Pipe::edit()
 {
@@ -78,7 +78,9 @@ std::ofstream& operator<<(std::ofstream& fout, const Pipe& p)
             << p.name << endl
             << p.length << endl
             << p.diameter << endl
-            << p.in_process << endl;
+            << p.in_process << endl
+            << p.in << endl
+            << p.out << endl;
     }
     return fout;
 }
@@ -116,6 +118,8 @@ std::ifstream& operator>>(std::ifstream& fin, Pipe& p)
         fin >> p.length;
         fin >> p.diameter;
         fin >> p.in_process;
+        fin >> p.in;
+        fin >> p.out;
     }
     return fin;
 }

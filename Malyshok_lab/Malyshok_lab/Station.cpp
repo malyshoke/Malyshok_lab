@@ -34,7 +34,8 @@ std::ofstream& operator<<(ofstream& fout, const Station& s)
             << s.name << endl
             << s.num << endl
             << s.num_process << endl
-            << s.eff << endl;
+            << s.eff << endl
+            << s.connection << endl;
     }
     return fout;
 }
@@ -94,6 +95,7 @@ std::ifstream& operator>>(std::ifstream& fin, Station& s)
         fin >> s.num;
         fin >> s.num_process;
         fin >> s.eff;
+        fin >> s.connection;
     }
     return fin;
 }

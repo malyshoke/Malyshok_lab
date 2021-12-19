@@ -5,6 +5,7 @@
 #include "Malyshok_lab.h"
 #include "Pipe.h"
 #include "Station.h"
+#include "GTS.h"
 #include <fstream>
 #include <set>
 #include <vector>
@@ -476,12 +477,16 @@ void batch_editing(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>&
     }
 }
 
-void show_connection(const unordered_map<int, Pipe>& pipes) 
+void show_connection(const unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations)
 {
-    for (auto& [id, p] : pipes)
-        if (p.linked())
-            p.showLink(id);
-        else cout << "Pipe " << id << " has no connection" << endl;
+    if (pipes.size() > 0 && stations.size() > 1) {
+        cout << "\tPipe's id " << "\tStation's id (pipe in) " << "\tStation's id (pipe out)" << "\tPipe's status" << endl;
+        for (auto& [id, p] : pipes)
+            if (p.linked())
+                p.showLink(id);
+            else cout << "\tPipe " << id << " has no connection" << endl;
+    }
+    else cout << "No connection " << endl;
 }
 
 template <typename T>
@@ -498,7 +503,7 @@ int check_id(const T& map, int id)
 }
 
 void add_branch(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
-    cout << "Enter id of pipes you want to link: " << endl;
+    cout << "Enter id of pipe you want to link: " << endl;
     int pipeId = check_id(pipes, GetCorrectNumber(0));
     cout << "Enter the id of station where the pipe enters: " << endl;
     int in = check_id(stations, GetCorrectNumber(0));
@@ -513,30 +518,47 @@ void add_branch(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& st
         cout << "Wrong action" << endl;
 }
 
+void disconnect(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
+    show_connection(pipes, stations);
+    cout << "Enter id of pipe you want to disconnect: " << endl;
+    int pipeId = check_id(pipes, GetCorrectNumber(0));
+    if (pipes[pipeId].linked()) {
+        stations[pipes[pipeId].in].untie();
+        stations[pipes[pipeId].out].untie();
+        pipes[pipeId].untie();
+    }
+}
+
 
 void connection_work(unordered_map<int, Pipe>& pipes, unordered_map<int, Station>& stations) {
     while (true) {
-        cout << endl << "Connection menu" << endl << "1. Connect pipe " << endl << "2. Show links " << endl
+        cout << endl << "Connection menu" << endl << "1. Connect pipe " << endl << "2. Disconnect pipe " << endl <<  "3. Show links " << endl
             << "0. Exit " << endl;
-        int edit_case = GetCorrectNumber(0, 3);
-        switch (edit_case) {
+        int input = GetCorrectNumber(0, 4);
+        switch (input) {
         case 1: {
 
             if (pipes.size() > 0 && stations.size() > 1)
                 add_branch(pipes, stations);
             else
-                cout << "No objects " << endl;
+                cout << "No objects to connect " << endl;
             break;
         }
         case 2: {
             if (pipes.size() > 0 && stations.size() > 1)
-                show_connection(pipes);
+                disconnect(pipes, stations);
             else
-                cout << "No objects " << endl;
+                cout << "No objects to disconnect" << endl;
+            break;
+           
+        }
+        case 3: {
+            show_connection(pipes, stations);
             break;
         }
-        case 0:
+        case 0: {
             return;
+        }
         default: {
             cout << "Wrong action" << endl;
             break;
@@ -695,8 +717,8 @@ int main()
     }
     case 11:
     {
+
         connection_work(pipes, stations);
-        show_connection(pipes);
         
         break;
     }

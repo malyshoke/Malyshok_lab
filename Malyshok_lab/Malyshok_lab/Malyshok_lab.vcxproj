@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GTS.cpp" />
     <ClCompile Include="Malyshok_lab.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -159,6 +160,7 @@
     <ClCompile Include="Station.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GTS.h" />
     <ClInclude Include="Malyshok_lab.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Pipe.h" />
