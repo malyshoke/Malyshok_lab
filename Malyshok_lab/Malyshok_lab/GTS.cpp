@@ -412,4 +412,19 @@ void GTS::TopologicalSort(const unordered_map<int, int>& VerticesIndex) {
         cout << "Sorting cannot be applied to a graph containing a cycle " << endl;
 }
 
+std::vector<std::vector<double>> GTS::MatrixWeights()
+{
+    unordered_map<int, int> VerticesIndex = GetIndexVertices();
+    vector<vector<double>> w;
+    w.assign(VerticesIndex.size(), {});
+    for (int i = 0; i < VerticesIndex.size(); ++i) {
+        w[i].assign(VerticesIndex.size(), INT_MAX);
+        w[i][i] = 0;
+    }
+    for (const auto& [i, p] : pipes)
+        if (p.CanBeUsed())
+            w[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.getLen();
+    return w;
+}
+
 
