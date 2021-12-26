@@ -19,6 +19,7 @@ public:
     bool getProc() const { return in_process; }
     static int getMaxID() { return MaxID; }
     std::string getName() const { return name; }
+    double getCapacity() const { return  round(10000 * 0.384 * sqrt(pow(double(diameter) / 1000, 5) / length)); }
     int getId() { return id; }
     int in, out;
     void link(int myin, int myout);

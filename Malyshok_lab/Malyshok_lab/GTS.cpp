@@ -427,4 +427,17 @@ std::vector<std::vector<double>> GTS::MatrixWeights()
     return w;
 }
 
+vector<vector<int>> GTS::MatrixCapacity()
+{
+    unordered_map<int, int> VerticesIndex = GetIndexVertices();
+    vector<vector<int>> t;
+    t.assign(VerticesIndex.size(), {});
+    for (int i = 0; i < VerticesIndex.size(); ++i)
+        t[i].assign(VerticesIndex.size(), 0);
+    for (const auto& [i, p] : pipes)
+        if (p.CanBeUsed())
+            t[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.getCapacity();
+    return t;
+}
+
 

@@ -19,6 +19,8 @@ class GTS
 	std::unordered_map<int, int> GetIndexVertices();
 	std::unordered_map<int, int> GetIndexVerticesBack();
 	void TopologicalSort(const std::unordered_map<int, int>&);
+	std::vector<std::vector<double>> MatrixWeights();
+	vector<vector<int>> MatrixCapacity();
 
 public:
 	void AddPipe();
