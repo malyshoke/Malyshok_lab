@@ -110,6 +110,11 @@ int main()
         gts.DoSort();
         break;
     }
+    case 13:
+    {
+        gts.FindStream();
+        break;
+    }
     case 0:
     {
         return 0;

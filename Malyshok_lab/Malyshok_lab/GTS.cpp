@@ -301,6 +301,21 @@ void GTS::EditStation()
 
     }
 
+    void GTS::FindStream()
+    {
+        weights_matrix = MatrixWeights();
+        throughput_matrix = MatrixCapacity();
+        unordered_map<int, int> VerticesIndex = GetIndexVerticesBack();
+        int start, end;
+        cout << "Enter the id from which to start searching for the stream: " << endl;
+        start = check_id(stations, GetCorrectNumber(0));
+        cout << "Enter the id where to end the search for the stream:  " << endl;
+        end = check_id(stations, GetCorrectNumber(0));
+        if (start == end) cout << "The beginning must not be the same as the end" << endl;
+        else 
+        Stream(VerticesIndex[start], VerticesIndex[end], VerticesIndex);
+    }
+
     void GTS::BatchEditing()
     {
         while (true) {
@@ -439,5 +454,49 @@ vector<vector<int>> GTS::MatrixCapacity()
             t[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.getCapacity();
     return t;
 }
+
+void GTS::Stream(int start, int end, const unordered_map<int, int>& IndexVerticesBack)
+{
+    int n = throughput_matrix.size();
+    vector<vector<int>> c = throughput_matrix;
+    double MaxFlow = 0;
+    while (true) {
+        vector <int> parent(n, -1);
+        vector <bool> used(n, false);
+        queue <int> q;
+
+        used[start] = true;
+        q.push(start);
+
+        while (!q.empty()) {
+            int v = q.front();
+            q.pop();
+            for (int i = 0; i < n; i++) {
+                if (!used[i] && c[v][i] > 0) {
+                    parent[i] = v;
+                    used[i] = true;
+                    q.push(i);
+                }
+            }
+        }
+        if (!used[end])
+            break;
+        int AugFlow = INT_MAX;
+        int ptr = end;
+        while (ptr != start) {
+            AugFlow = min(AugFlow, c[parent[ptr]][ptr]);
+            ptr = parent[ptr];
+        }
+        ptr = end;
+        while (ptr != start) {
+            c[parent[ptr]][ptr] -= AugFlow;
+            c[ptr][parent[ptr]] += AugFlow;
+            ptr = parent[ptr];
+        }
+        MaxFlow += AugFlow;
+    }
+    cout << "Max stream: " << MaxFlow << endl;
+}
+
 
 

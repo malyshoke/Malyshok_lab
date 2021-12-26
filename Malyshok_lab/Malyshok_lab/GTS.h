@@ -9,6 +9,7 @@
 #include <set>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 //using namespace std;
 class GTS
 {
@@ -21,6 +22,9 @@ class GTS
 	void TopologicalSort(const std::unordered_map<int, int>&);
 	std::vector<std::vector<double>> MatrixWeights();
 	vector<vector<int>> MatrixCapacity();
+	vector<vector<double>> weights_matrix;
+	vector<vector<int>> throughput_matrix;
+	void Stream(int, int, const unordered_map<int, int>&);
 
 public:
 	void AddPipe();
@@ -34,6 +38,7 @@ public:
 	void LoadInfo();
 	void ConnectionWork();
 	void DoSort();
+	void FindStream();
 	void BatchEditing();
 };
 
