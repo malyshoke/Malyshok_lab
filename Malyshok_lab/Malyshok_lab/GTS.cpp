@@ -303,9 +303,11 @@ void GTS::EditStation()
 
     void GTS::FindStream()
     {
+        ribs = AddGraph();
         weights_matrix = MatrixWeights();
         throughput_matrix = MatrixCapacity();
-        unordered_map<int, int> VerticesIndex = GetIndexVerticesBack();
+        unordered_map<int, int> VerticesIndex = GetIndexVertices();
+        unordered_map<int, int> VerticesIndexForOutput = GetIndexVerticesBack();
         int start, end;
         cout << "Enter the id from which to start searching for the stream: " << endl;
         start = check_id(stations, GetCorrectNumber(0));
@@ -313,7 +315,24 @@ void GTS::EditStation()
         end = check_id(stations, GetCorrectNumber(0));
         if (start == end) cout << "The beginning must not be the same as the end" << endl;
         else 
-        Stream(VerticesIndex[start], VerticesIndex[end], VerticesIndex);
+            Stream(VerticesIndex[start], VerticesIndex[end], VerticesIndexForOutput);
+    }
+
+    void GTS::FindWay()
+    {
+        ribs = AddGraph();
+        weights_matrix = MatrixWeights();
+        throughput_matrix = MatrixCapacity();
+        unordered_map<int, int> VerticesIndexForOutput = GetIndexVerticesBack();
+        unordered_map<int, int> VerticesIndex = GetIndexVertices();
+        int start, end;
+        cout << "Enter the id from which to start searching for the way: " << endl;
+        start = check_id(stations, GetCorrectNumber(0));
+        cout << "Enter the id where to end the search for the way:  " << endl;
+        end = check_id(stations, GetCorrectNumber(0));
+        if (start == end) cout << "The beginning must not be the same as the end" << endl;
+        else
+            Way(VerticesIndex[start], VerticesIndex[end], VerticesIndexForOutput);
     }
 
     void GTS::BatchEditing()
@@ -419,7 +438,7 @@ void GTS::TopologicalSort(const unordered_map<int, int>& VerticesIndex) {
     if (cycle_start == -1) {
         reverse(result.begin(), result.end());
         for (int i = 0; i < result.size(); i++) {
-            cout << " Station "  << VerticesIndex.at(result[i]) << " -> ";
+            cout << i + 1 << " Station:  " << VerticesIndex.at(result[i]) << endl;
         }
         cout << endl;
     }
@@ -464,10 +483,8 @@ void GTS::Stream(int start, int end, const unordered_map<int, int>& IndexVertice
         vector <int> parent(n, -1);
         vector <bool> used(n, false);
         queue <int> q;
-
         used[start] = true;
         q.push(start);
-
         while (!q.empty()) {
             int v = q.front();
             q.pop();
@@ -498,5 +515,33 @@ void GTS::Stream(int start, int end, const unordered_map<int, int>& IndexVertice
     cout << "Max stream: " << MaxFlow << endl;
 }
 
+void GTS::Way(int start, int end, const unordered_map<int, int>& VerticesIndexForOutput)
+{
+    vector<vector<double>> res = weights_matrix;
+    vector<vector<int>> next; 
+    int n = res.size();
+    next.resize(n);
+    for (int i = 0; i < n; i++)
+        for (int t = 0; t < n; t++)
+            next[i].push_back(t);
+    for (int k = 0; k < n; k++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                if (res[i][j] > res[i][k] + res[k][j]) {
+                    res[i][j] = res[i][k] + res[k][j];
+                    next[i][j] = next[i][k];
+                }
+    if (res[start][end] == INT_MAX) {
+        cout << "No way" << endl;
+        return;
+    }
+    cout << "Way from station with id " << VerticesIndexForOutput.at(start) << " to station with id " << VerticesIndexForOutput.at(end) << " = " << res[start][end] << endl << "Way: " << endl;
+    int temp = start;
+    while (temp != end) {
+        cout << VerticesIndexForOutput.at(temp) << " -> ";
+        temp = next[temp][end];
+    }
+    cout << VerticesIndexForOutput.at(end) << endl;
+}
 
 

@@ -28,6 +28,8 @@ void print_menu()
         << "10. Load " << endl
         << "11. Communication work " << endl
         << "12. Topological sort " << endl
+        << "13. Find way " << endl
+        << "14. Max Stream " << endl
         << "0. Exit" << endl;
 }
 
@@ -40,7 +42,7 @@ int main()
     while (1)
     {
     print_menu();
-    switch (GetCorrectNumber(0,13))
+    switch (GetCorrectNumber(0,14))
     {
     case 1:
     {   
@@ -111,6 +113,11 @@ int main()
         break;
     }
     case 13:
+    {
+        gts.FindWay();
+        break;
+    } 
+    case 14:
     {
         gts.FindStream();
         break;

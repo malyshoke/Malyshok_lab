@@ -10,21 +10,22 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
-//using namespace std;
+
 class GTS
 {
 	std::vector<std::vector<int>> ribs;
 	std::unordered_map<int, Pipe> pipes;
 	std::unordered_map<int, Station> stations;
+	vector<vector<double>> weights_matrix;
+	vector<vector<int>> throughput_matrix;
 	std::vector<std::vector<int>> AddGraph();
 	std::unordered_map<int, int> GetIndexVertices();
 	std::unordered_map<int, int> GetIndexVerticesBack();
 	void TopologicalSort(const std::unordered_map<int, int>&);
 	std::vector<std::vector<double>> MatrixWeights();
 	vector<vector<int>> MatrixCapacity();
-	vector<vector<double>> weights_matrix;
-	vector<vector<int>> throughput_matrix;
 	void Stream(int, int, const unordered_map<int, int>&);
+	void Way(int, int, const unordered_map<int, int>&);
 
 public:
 	void AddPipe();
@@ -39,6 +40,7 @@ public:
 	void ConnectionWork();
 	void DoSort();
 	void FindStream();
+	void FindWay();
 	void BatchEditing();
 };
 
